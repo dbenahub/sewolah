@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Admin\BookingsTable;
+use App\Livewire\Admin\ChangePassword;
 use App\Livewire\Admin\Dashboard;
 use App\Livewire\Admin\PageSettings;
 use App\Livewire\Admin\PixelSettings;
@@ -42,5 +43,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/pixel-settings', PixelSettings::class)->name('pixel-settings');
         Route::get('/page-settings', PageSettings::class)->name('page-settings');
         Route::get('/vehicles', VehicleManager::class)->name('vehicles');
+        Route::get('/change-password', ChangePassword::class)->name('change-password');
     });
 });

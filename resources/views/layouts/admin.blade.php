@@ -21,6 +21,7 @@
                 ['route' => 'admin.vehicles', 'label' => __('admin.nav.vehicles')],
                 ['route' => 'admin.pixel-settings', 'label' => __('admin.nav.pixels')],
                 ['route' => 'admin.page-settings', 'label' => __('admin.nav.page_settings')],
+                ['route' => 'admin.change-password', 'label' => __('admin.nav.change_password')],
             ])
             @foreach($navItems as $item)
                 <a href="{{ route($item['route']) }}"
