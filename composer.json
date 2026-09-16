@@ -6,7 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.4",
-        "laravel/framework": "^11.0",
+        "laravel/framework": "^11.44",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5"
     },
@@ -58,6 +58,14 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
+        },
+        "audit": {
+            "abandoned": "report"
+        },
+        "policy": {
+            "advisories": {
+                "block": false
+            }
         }
     },
     "minimum-stability": "stable",
