@@ -14,6 +14,7 @@ set /p MSG="Taip penerangan ringkas untuk perubahan ni (atau tekan Enter untuk g
 if "%MSG%"=="" set MSG=Update fail SEWOLAH
 
 git add .
+git add -f storage/app/public/vehicles
 git commit -m "%MSG%"
 git push
 
