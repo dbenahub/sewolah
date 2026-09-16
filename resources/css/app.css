@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body { @apply antialiased; }
+}
+
+@keyframes sw-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(227,30,36,0.55); }
+  70% { box-shadow: 0 0 0 14px rgba(227,30,36,0); }
+  100% { box-shadow: 0 0 0 0 rgba(227,30,36,0); }
+}
+.animate-sw-pulse { animation: sw-pulse 2.4s infinite; }
