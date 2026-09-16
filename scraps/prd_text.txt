@@ -1,0 +1,399 @@
+PRODUCT REQUIREMENTS DOCUMENT (PRD)
+SEWOLAH LANDING PAGE
+Premium Airport Traveller Car Rental Landing Page
+Project Name
+SEWOLAH Car Rental Landing Page
+Brand
+SEWOLAH
+Tagline
+Rent With Confidence.
+Strategic Partner
+Go Green Matrix
+Website
+www.sewolah.com
+1. OBJECTIVE
+Build a high-converting premium landing page for SEWOLAH.
+Primary objective: Convert visitors into qualified booking enquiries through a booking form.
+After the form is submitted:
+Save the lead information.
+Trigger the Lead conversion event.
+Redirect customer to WhatsApp.
+Pre-fill WhatsApp with the information submitted in the form.
+Main conversion flow:
+Meta Ads / Social Media → Landing Page → Booking Form → Submit → WhatsApp → SEWOLAH Team Follow-Up → Quotation → Booking Confirmation
+2. TARGET AUDIENCE
+Primary audience: People from outside Kuala Lumpur and Selangor who are travelling to Kuala Lumpur by flight.
+A. Family Traveller
+Travelling to KL with:
+Spouse
+Children
+Parents
+Family members
+Luggage
+Typical reasons:
+Holiday
+Family visit
+Wedding
+Medical visit
+Events
+Shopping
+Short stay in Kuala Lumpur
+Main pain points:
+Do not want to drive several hours from their home state to KL.
+Tired after long-distance driving.
+Travelling with children and luggage is difficult.
+Depending on e-hailing throughout the trip is inconvenient.
+Need flexibility to travel to multiple locations.
+Desired outcome: Fly to Kuala Lumpur, collect or receive the vehicle, and immediately start their journey.
+B. Business Traveller
+Target:
+Business owner
+SME owner
+Director
+Executive
+Professional
+Corporate guest
+Typical travel reasons:
+Meetings
+Site visits
+Business events
+Corporate appointments
+Client meetings
+Conferences
+Pain points:
+Multiple meetings in different locations.
+Does not want to wait for e-hailing.
+Needs flexibility.
+Wants a professional vehicle.
+Does not want to drive long distance from another state.
+Desired outcome: Fly into Kuala Lumpur and have a vehicle ready to move immediately.
+3. CORE CUSTOMER INSIGHT
+The landing page should communicate one simple idea:
+“Tak perlu drive jauh ke KL. Sampai airport, kereta dah ready.”
+Customer should immediately understand that they can travel to KL by flight and arrange their rental car before arrival.
+The service should feel:
+Easy
+Convenient
+Professional
+Premium
+Reliable
+Flexible
+4. MAIN HERO MESSAGE
+Primary headline:
+Datang KL Naik Flight?
+Sampai Airport, Kereta Dah Ready.
+Supporting copy:
+Tak perlu penat drive berjam-jam dari negeri asal. Naik flight ke Kuala Lumpur, tempah kereta lebih awal dan terus bergerak dengan mudah sepanjang berada di KL &amp; Selangor.
+For: Family Trip • Business Trip • Premium Travel
+Primary CTA: TEMPAH KERETA SEBELUM FLIGHT
+Secondary CTA: SEMAK AVAILABILITY
+Microcopy: Isi borang tempahan sekarang dan team SEWOLAH akan bantu semak pilihan kenderaan yang sesuai sebelum anda tiba. All vehicles are subject to availability.
+5. VISUAL DIRECTION
+Overall style:
+Premium
+Modern
+Exclusive
+Clean
+Corporate
+Minimal
+Avoid:
+Cheap car rental visual style
+Overcrowded sections
+Too many bright colours
+Generic marketplace appearance
+Excessive icons
+Cheap promotional banners
+The website must feel like a premium travel mobility service.
+6. BRAND COLOURS
+Black — #000000
+White — #FFFFFF
+SEWOLAH Red — Suggested starting red #E31E24
+Dark Grey — #161616
+Light Grey — #F5F5F5
+Use solid colours only. No gradients.
+Use black as the dominant premium background colour. Use red selectively for CTA, important highlights, lines, active states and small visual accents.
+7. TYPOGRAPHY
+Use modern premium sans-serif typography.
+Inter
+Manrope
+Plus Jakarta Sans
+Montserrat
+DM Sans
+Headings: Bold / Extra Bold. Body: Regular / Medium.
+Avoid decorative fonts.
+8. PAGE STRUCTURE
+SECTION 1 — HERO
+Above the fold. Desktop: Two-column layout.
+Left: Headline, supporting text, CTA, trust information.
+Right: Premium hero visual featuring Toyota Alphard SC, Volkswagen Arteon R-Line and Proton X70 with an airport / Kuala Lumpur travel atmosphere.
+The visual should communicate: Arrive by flight → car ready → start journey.
+Hero headline: DATANG KL NAIK FLIGHT? SAMPAI AIRPORT, KERETA DAH READY.
+CTA: TEMPAH KERETA SEBELUM FLIGHT
+Secondary CTA: SEMAK AVAILABILITY
+Trust line: Family Travel • Business Travel • Premium Travel
+SECTION 2 — STRATEGIC PARTNER TRUST BAR
+Text: STRATEGIC PARTNER
+Go Green Matrix
+Copy: SEWOLAH bekerjasama dengan Go Green Matrix bagi memperluaskan rangkaian pilihan kenderaan serta memberikan pengalaman perjalanan yang lebih mudah kepada pelanggan.
+Keep this section clean. Use partner logo if available.
+SECTION 3 — PROBLEM SECTION
+Headline: Malas Nak Drive Jauh Ke KL?
+Drive Berjam-Jam — Perjalanan jauh boleh menyebabkan keletihan sebelum trip bermula.
+Family + Luggage — Lebih mencabar apabila membawa anak, ibu bapa dan banyak barang.
+Bergantung Pada E-Hailing — Perlu tunggu setiap kali mahu bergerak.
+Banyak Destinasi — Meeting, hotel, shopping, event dan urusan lain mungkin berada di lokasi berbeza.
+Closing message: Terbang ke KL. Ambil kereta. Teruskan perjalanan.
+SECTION 4 — SOLUTION SECTION
+Headline: Cara Lebih Mudah Untuk Bergerak Di KL &amp; Selangor
+Visual journey: Flight → Airport → Kereta Ready → Destination
+Copy: Rancang kenderaan sebelum anda berlepas. Apabila tiba, anda tidak perlu mula mencari pengangkutan dari awal. SEWOLAH membantu anda mendapatkan kenderaan berdasarkan tarikh, jumlah penumpang dan tujuan perjalanan.
+SECTION 5 — FEATURED VEHICLES
+Headline: Pilih Kereta Mengikut Perjalanan Anda
+Important: Do NOT display rental pricing.
+Proton X70
+Category: Family SUV
+Suitable for:
+Family trip
+Small to medium family
+Business traveller
+Multi-day travel
+Comfortable SUV travel
+CTA: TEMPAH X70
+Volkswagen Arteon R-Line
+Category: Executive Drive
+Suitable for:
+Business traveller
+Executive
+SME owner
+Corporate guest
+Business meetings
+Special occasion
+CTA: TEMPAH ARTEON
+Toyota Alphard SC
+Category: Premium Family MPV
+Suitable for:
+Large family
+Parents and children
+More luggage
+Premium traveller
+Corporate / VIP guest
+Multi-day travel
+CTA: TEMPAH ALPHARD
+SECTION 6 — OTHER VEHICLE OPTIONS
+Headline: Cari Model Kereta Lain?
+Tak jumpa model yang anda perlukan?
+SEWOLAH juga mempunyai akses kepada pelbagai pilihan kenderaan lain melalui rangkaian kami, tertakluk kepada availability.
+Sedan
+SUV
+MPV
+Family Car
+Executive Car
+Premium Car
+Corporate Vehicle
+Specific Model Request
+Beritahu sahaja model atau kategori yang anda cari. Team SEWOLAH akan bantu semak pilihan berdasarkan tarikh perjalanan, jumlah penumpang dan availability semasa.
+CTA: MINTA TEAM CARI KERETA
+SECTION 7 — FAMILY TRAVEL
+Headline: Datang KL Bersama Family?
+Copy: Bawa anak? Datang bersama ibu bapa? Banyak luggage? Perlu bergerak ke beberapa lokasi? Dengan kenderaan sendiri sepanjang trip, perjalanan menjadi lebih fleksibel dan selesa.
+Recommended: Proton X70 / Toyota Alphard SC
+CTA: SEMAK KERETA FAMILY
+SECTION 8 — BUSINESS TRAVEL
+Headline: Datang KL Untuk Urusan Bisnes?
+Copy: Meeting di beberapa lokasi? Perlu bergerak mengikut jadual sendiri? Tak mahu terlalu bergantung kepada e-hailing? Gunakan kenderaan sepanjang berada di Kuala Lumpur dan Selangor supaya perjalanan kerja lebih mudah dan fleksibel.
+Recommended: Volkswagen Arteon R-Line / Toyota Alphard SC
+CTA: SEMAK KERETA BUSINESS
+SECTION 9 — WHY SEWOLAH
+Headline: Kenapa SEWOLAH?
+Mudah — Tempah lebih awal sebelum anda terbang.
+Fleksibel — Bergerak mengikut jadual anda sendiri.
+Banyak Pilihan — Tidak terhad kepada model yang dipaparkan di website.
+Untuk Family &amp; Business — Pilihan mengikut tujuan perjalanan.
+Team Support — Team SEWOLAH membantu semak kenderaan dan memberikan maklumat lanjut sebelum tempahan.
+SECTION 10 — HOW IT WORKS
+Headline: Tempah Sebelum Flight. Sampai Terus Jalan.
+ISI BORANG — Masukkan tarikh perjalanan dan keperluan kenderaan.
+SEMAK AVAILABILITY — Team SEWOLAH semak model pilihan.
+WHATSAPP — Selepas submit, customer terus dibawa ke WhatsApp.
+CONFIRM BOOKING — Team memberikan info, quotation dan proses pengesahan.
+SAMPAI KL — Kenderaan disediakan mengikut arrangement yang telah dipersetujui.
+9. MAIN BOOKING FORM
+Headline: Flight Dah Confirm?
+Subheadline: Isi Borang Tempahan Sebelum Tarikh Pilihan Penuh.
+Supporting text: Berikan beberapa maklumat perjalanan. Team SEWOLAH akan bantu semak availability dan cadangkan pilihan kenderaan yang sesuai.
+Required fields:
+Full Name
+Mobile / WhatsApp Number
+Datang Dari Negeri / Bandar Mana?
+Arrival Airport: KLIA / KLIA2 / Subang Airport / Other
+Arrival Date
+Arrival Time
+Rental End Date
+Travel Purpose: Family Trip / Business Trip / Corporate / Holiday / Event / Other
+Preferred Vehicle: Proton X70 / Volkswagen Arteon R-Line / Toyota Alphard SC / Other Vehicle / Not Sure — Recommend For Me
+If Other Vehicle: Model / Jenis Kereta Yang Dicari
+Number of Passengers
+Estimated Luggage: Light / Medium / Heavy / Not Sure
+Main Destination / Area
+Additional Notes
+Consent checkbox to be contacted by SEWOLAH team
+CTA: SEMAK KERETA UNTUK TRIP SAYA
+Microcopy: Semua pilihan kenderaan tertakluk kepada availability, customer verification, terma penyewaan dan pengesahan booking.
+10. FORM USER EXPERIENCE
+Use multi-step form if possible.
+Step 1 — Travel Details
+Step 2 — Vehicle Preference
+Step 3 — Contact Details
+Show progress indicator: 1/3, 2/3, 3/3.
+Avoid showing too many fields at once on mobile.
+11. AFTER FORM SUBMISSION
+Save all form fields into the backend / database.
+Trigger Meta Pixel Lead event.
+Display success state.
+Redirect/open WhatsApp.
+WhatsApp pre-filled message:
+Hi SEWOLAH, saya telah isi borang tempahan untuk trip saya ke KL.
+Nama: {{name}}
+Datang Dari: {{origin}}
+Airport: {{airport}}
+Tarikh/Masa Ketibaan: {{arrival_date_time}}
+Tarikh Tamat Sewa: {{end_date}}
+Tujuan: {{travel_purpose}}
+Kenderaan Pilihan: {{vehicle}}
+Model Lain: {{other_vehicle}}
+Jumlah Penumpang: {{passengers}}
+Luggage: {{luggage}}
+Lokasi Utama: {{destination}}
+Catatan: {{notes}}
+Boleh team SEWOLAH bantu semak availability dan berikan info lanjut untuk tempahan saya?
+12. CTA STRATEGY
+Primary CTA: TEMPAH KERETA SEBELUM FLIGHT
+Other CTA variations:
+SEMAK AVAILABILITY
+SEMAK KERETA UNTUK TRIP SAYA
+MINTA TEAM CARI KERETA
+SEMAK KERETA FAMILY
+SEMAK KERETA BUSINESS
+Avoid: Buy Now / Checkout / Pay Now.
+The customer is making an enquiry, not an instant purchase.
+13. MOBILE CTA
+On mobile, implement sticky bottom CTA.
+Button: TEMPAH KERETA
+When clicked: Scroll smoothly to booking form.
+Do NOT send directly to WhatsApp before form submission. Primary objective is to capture customer data first.
+14. FINAL CTA SECTION
+Headline: Tak Perlu Drive Jauh Ke KL.
+Subheadline: Terbang. Sampai. Ambil Kereta. Terus Jalan.
+Copy: Family trip, business trip atau perjalanan beberapa hari — rancang kenderaan anda sebelum flight. Isi borang tempahan dan team SEWOLAH akan bantu semak availability.
+CTA: TEMPAH KERETA SEBELUM FLIGHT
+15. FOOTER
+SEWOLAH
+Rent With Confidence.
+Family Travel • Business Travel • Premium Travel
+Kuala Lumpur • Selangor
+Strategic Partner: Go Green Matrix
+www.sewolah.com
+Navigation: Pilihan Kereta / Cara Tempahan / Booking / Contact / Privacy Policy / Terms &amp; Conditions
+16. META PIXEL / TRACKING
+PageView — On landing page load.
+ViewContent — When meaningful landing page content is viewed.
+FormStart — When user starts filling booking form.
+Lead — Trigger ONLY after booking form has successfully been submitted and stored.
+Contact — Trigger when WhatsApp is opened after successful form submission.
+Do not trigger Lead only from clicking a WhatsApp button.
+17. UTM TRACKING
+utm_source
+utm_medium
+utm_campaign
+utm_content
+utm_term
+landing_page_url
+referrer
+timestamp
+fbclid (if available)
+These values should stay attached to the lead record.
+18. SEO
+Page title: SEWOLAH | Kereta Sewa Kuala Lumpur &amp; Selangor Untuk Family &amp; Business Traveller
+Meta description: Datang ke Kuala Lumpur naik flight? Tempah kereta lebih awal bersama SEWOLAH. Pilihan untuk family trip, business trip dan premium travel sekitar KL &amp; Selangor.
+Suggested keywords:
+kereta sewa KL
+kereta sewa Kuala Lumpur
+kereta sewa Selangor
+kereta sewa airport
+kereta sewa KLIA
+car rental Kuala Lumpur
+car rental Selangor
+family car rental KL
+business car rental KL
+Alphard rental KL
+X70 rental KL
+Do not keyword-stuff.
+19. RESPONSIVE DESIGN
+Mobile-first.
+Fast loading
+Readable headings
+Large CTA buttons
+Short sections
+Simple booking form
+Thumb-friendly interaction
+Mobile CTA minimum height: 48px
+Form fields full width
+Avoid excessive animations.
+20. PERFORMANCE
+Target: Google Lighthouse Performance 90+
+Compress images
+Use WebP / AVIF
+Lazy-load below-fold images
+Avoid unnecessary JavaScript
+Optimize fonts
+Avoid large video autoplay on mobile
+Keep hero loading fast
+21. DESIGN DETAILS
+Buttons: Rounded but not overly rounded.
+Use red primary CTA with high contrast.
+Cards: Clean border or subtle shadows.
+Use generous whitespace.
+Vehicle cards: Large premium image, vehicle name, category, short benefits, CTA.
+Avoid clutter.
+22. IMAGE DIRECTION
+KLIA / airport arrival feeling
+Traveller with suitcase
+Premium vehicles
+Family traveller
+Business traveller
+Kuala Lumpur skyline / urban environment
+Avoid generic low-quality stock imagery.
+Hero should visually communicate: Customer has just landed and vehicle is already ready.
+23. IMPORTANT COPY RULE
+Do NOT display rental prices yet.
+Do NOT claim every vehicle is owned directly by SEWOLAH.
+For additional vehicles use wording: “SEWOLAH mempunyai akses kepada pelbagai pilihan kenderaan melalui rangkaian kami, tertakluk kepada availability.”
+Do NOT promise a specific vehicle without confirmation.
+Use: “Tertakluk kepada availability.”
+24. CONVERSION PRINCIPLE
+The website should NOT behave like a large car-rental marketplace.
+SEWOLAH should feel like a premium assisted booking service.
+Core message: “Beritahu perjalanan anda. Team kami bantu cari kenderaan yang sesuai.”
+25. SUCCESS METRICS
+Landing Page Views
+Form Starts
+Completed Forms
+Landing Page → Lead Conversion Rate
+WhatsApp Opens
+Qualified Leads
+Confirmed Bookings
+Cost Per Lead
+Cost Per Confirmed Booking
+Revenue Generated
+ROAS
+Main conversion: Completed Booking Enquiry Form
+26. FINAL DESIGN OUTCOME
+“I don't need to drive all the way to KL.”
+“I can fly there and have a car arranged before I arrive.”
+“I can just fill in my trip information and SEWOLAH will help me.”
+“I have more options even if the car I want isn't shown.”
+“I should submit my travel dates now before availability becomes limited.”
+SAMPAI AIRPORT, KERETA DAH READY.
+SEWOLAH — RENT WITH CONFIDENCE.
+27. CLAUDE DESIGN / DEVELOPMENT INSTRUCTION
+Build this as a premium, conversion-focused, mobile-first landing page. Do not simplify or remove the booking flow. Prioritise lead capture before WhatsApp redirect. Use reusable components and make the code production-ready.

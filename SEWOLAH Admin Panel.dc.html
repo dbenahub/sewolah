@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#0A0A0A;}
+  a{color:#E31E24;text-decoration:none;}
+  a:hover{color:#ff4b52;}
+  input::placeholder{color:rgba(0,0,0,0.35);}
+</style>
+</helmet>
+
+<div style="font-family:'Plus Jakarta Sans',sans-serif;background:#0A0A0A;color:#fff;min-height:100vh;">
+
+<sc-if value="{{ notLoggedIn }}" hint-placeholder-val="{{ true }}">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;">
+    <form onSubmit="{{ handleLogin }}" style="width:100%;max-width:380px;background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:36px;display:grid;gap:18px;">
+      <div style="display:grid;gap:4px;justify-items:center;margin-bottom:6px;">
+        <img src="assets/logo-black.png" alt="SEWOLAH" style="height:34px;">
+        <p style="margin:8px 0 0;font-size:13px;font-weight:700;letter-spacing:0.06em;color:rgba(255,255,255,0.5);">SUPER ADMIN PANEL</p>
+      </div>
+      <label style="display:grid;gap:6px;font-size:13px;font-weight:600;">Username
+        <input type="text" value="{{ loginUser }}" onChange="{{ setLoginUser }}" placeholder="admin" style="{{ loginInputStyle }}">
+      </label>
+      <label style="display:grid;gap:6px;font-size:13px;font-weight:600;">Password
+        <input type="password" value="{{ loginPass }}" onChange="{{ setLoginPass }}" placeholder="••••••••" style="{{ loginInputStyle }}">
+      </label>
+      <sc-if value="{{ loginError }}" hint-placeholder-val="{{ false }}">
+        <p style="margin:0;font-size:12.5px;color:#ff6b6b;">Username atau password salah.</p>
+      </sc-if>
+      <button type="submit" style="background:#E31E24;color:#fff;font-weight:700;font-size:14px;padding:14px;border-radius:9px;border:none;cursor:pointer;">LOG MASUK</button>
+      <p style="margin:0;font-size:11.5px;color:rgba(255,255,255,0.35);text-align:center;">Demo: admin / sewolah2026</p>
+    </form>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isLoggedIn }}" hint-placeholder-val="{{ false }}">
+  <div style="display:grid;grid-template-columns:220px minmax(0,1fr);min-height:100vh;">
+    <aside style="background:#141414;border-right:1px solid rgba(255,255,255,0.08);padding:22px 16px;display:grid;gap:6px;align-content:start;">
+      <div style="margin:-4px -4px 18px;padding:14px 12px;background:#0A0A0A;border-radius:10px;">
+        <img src="assets/logo-black.png" alt="SEWOLAH" style="height:28px;display:block;">
+      </div>
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+        <button type="button" onClick="{{ n.onClick }}" style="{{ n.style }}">{{ n.label }}</button>
+      </sc-for>
+      <div style="margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08);">
+        <button type="button" onClick="{{ handleLogout }}" style="width:100%;text-align:left;background:transparent;border:none;color:rgba(255,255,255,0.55);font-size:13.5px;font-weight:600;padding:10px 12px;border-radius:8px;cursor:pointer;">Log Keluar</button>
+      </div>
+    </aside>
+
+    <main style="padding:clamp(20px,3vw,36px);display:grid;gap:24px;align-content:start;">
+
+      <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;gap:22px;">
+          <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:flex-end;">
+            <div>
+              <h1 style="margin:0 0 4px;font-size:26px;font-weight:800;">Dashboard</h1>
+              <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.45);">Gambaran prestasi tempahan SEWOLAH</p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <sc-for list="{{ rangeOptions }}" as="r" hint-placeholder-count="3">
+                <button type="button" onClick="{{ r.onClick }}" style="{{ r.style }}">{{ r.label }}</button>
+              </sc-for>
+              <sc-if value="{{ isCustomRange }}" hint-placeholder-val="{{ false }}">
+                <input type="date" value="{{ customFrom }}" onChange="{{ setCustomFrom }}" style="{{ dateInputStyle }}">
+                <span style="color:rgba(255,255,255,0.35);font-size:12px;">—</span>
+                <input type="date" value="{{ customTo }}" onChange="{{ setCustomTo }}" style="{{ dateInputStyle }}">
+              </sc-if>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
+            <sc-for list="{{ statCards }}" as="c" hint-placeholder-count="4">
+              <div style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:20px;display:grid;gap:10px;position:relative;overflow:hidden;">
+                <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:{{ c.accent }};"></div>
+                <p style="margin:0;font-size:11.5px;font-weight:700;letter-spacing:0.05em;color:rgba(255,255,255,0.5);">{{ c.label }}</p>
+                <p style="margin:0;font-size:30px;font-weight:800;">{{ c.value }}</p>
+                <p style="margin:0;font-size:11.5px;color:rgba(255,255,255,0.4);">{{ c.sub }}</p>
+                <span style="justify-self:start;font-size:11px;font-weight:700;color:{{ c.trendColor }};">{{ c.trend }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;">
+            <div style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:24px;display:grid;gap:18px;">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;">
+                <p style="margin:0;font-size:15px;font-weight:700;">Trend Leads</p>
+                <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.4);">{{ rangeLabel }}</p>
+              </div>
+              <div style="display:flex;align-items:flex-end;gap:8px;height:160px;padding:0 4px;border-bottom:1px solid rgba(255,255,255,0.08);">
+                <sc-for list="{{ chartBars }}" as="b" hint-placeholder-count="7">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end;">
+                    <span style="font-size:10.5px;color:rgba(255,255,255,0.5);">{{ b.count }}</span>
+                    <div style="width:100%;max-width:30px;border-radius:5px 5px 0 0;background:#E31E24;height:{{ b.height }};min-height:3px;"></div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:flex;gap:8px;padding:0 4px;">
+                <sc-for list="{{ chartBars }}" as="b" hint-placeholder-count="7">
+                  <span style="flex:1;text-align:center;font-size:10.5px;color:rgba(255,255,255,0.4);">{{ b.label }}</span>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:24px;display:grid;gap:16px;align-content:start;">
+              <p style="margin:0;font-size:15px;font-weight:700;">Kenderaan Diminati</p>
+              <sc-if value="{{ noRangeLeads }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:0;font-size:12.5px;color:rgba(255,255,255,0.4);">Belum ada data tempahan dalam tempoh ini.</p>
+              </sc-if>
+              <sc-if value="{{ hasRangeLeads }}" hint-placeholder-val="{{ false }}">
+                <div style="display:grid;gap:12px;">
+                  <sc-for list="{{ vehicleBreakdown }}" as="v" hint-placeholder-count="4">
+                    <div style="display:grid;gap:5px;">
+                      <div style="display:flex;justify-content:space-between;font-size:12.5px;">
+                        <span style="color:rgba(255,255,255,0.75);">{{ v.label }}</span>
+                        <span style="color:rgba(255,255,255,0.5);">{{ v.count }}</span>
+                      </div>
+                      <div style="background:#0A0A0A;border-radius:100px;height:7px;overflow:hidden;">
+                        <div style="height:100%;background:#E31E24;width:{{ v.pct }};border-radius:100px;"></div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+
+          <div style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:24px;display:grid;gap:18px;">
+            <p style="margin:0;font-size:15px;font-weight:700;">Corong Penukaran (Conversion Funnel)</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;">
+              <sc-for list="{{ funnelSteps }}" as="f" hint-placeholder-count="4">
+                <div style="display:grid;gap:8px;text-align:center;padding:18px 12px;background:#0A0A0A;border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
+                  <p style="margin:0;font-size:22px;font-weight:800;color:#E31E24;">{{ f.value }}</p>
+                  <p style="margin:0;font-size:12px;font-weight:700;letter-spacing:0.03em;">{{ f.label }}</p>
+                </div>
+              </sc-for>
+            </div>
+            <p style="margin:0;font-size:11.5px;color:rgba(255,255,255,0.35);">Nota: Page View &amp; Form Start memerlukan Meta/Google Pixel disambungkan untuk data sebenar — buat masa ini dianggarkan daripada jumlah Leads.</p>
+          </div>
+
+          <div style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:22px;display:grid;gap:14px;">
+            <p style="margin:0;font-size:15px;font-weight:700;">Notifikasi Terkini</p>
+            <p style="margin:0;font-size:12.5px;color:rgba(255,255,255,0.45);">Simulasi: setiap tempahan baru akan menghantar email ke sewolah@gmail.com dan WhatsApp ke 601116946696. Sambungkan backend untuk penghantaran sebenar.</p>
+            <sc-if value="{{ hasLeads }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid;gap:10px;">
+                <sc-for list="{{ recentNotifications }}" as="note" hint-placeholder-count="3">
+                  <div style="display:flex;gap:12px;align-items:center;padding:10px 12px;background:#0A0A0A;border-radius:9px;border:1px solid rgba(255,255,255,0.06);">
+                    <span style="font-size:12px;font-weight:700;color:#E31E24;">📧 &amp; 💬</span>
+                    <span style="font-size:13px;color:rgba(255,255,255,0.75);">{{ note.text }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ noLeads }}" hint-placeholder-val="{{ true }}">
+              <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.4);">Tiada tempahan lagi.</p>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isBookings }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;gap:20px;">
+          <h1 style="margin:0;font-size:26px;font-weight:800;">Tempahan &amp; Pelanggan</h1>
+          <sc-if value="{{ noLeads }}" hint-placeholder-val="{{ true }}">
+            <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.45);">Tiada tempahan lagi. Isi borang tempahan di Landing Page untuk lihat data di sini.</p>
+          </sc-if>
+          <sc-if value="{{ hasLeads }}" hint-placeholder-val="{{ false }}">
+          <div style="overflow-x:auto;background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:14px;">
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+              <thead>
+                <tr style="text-align:left;color:rgba(255,255,255,0.5);">
+                  <th style="padding:14px 16px;font-weight:700;">Nama</th>
+                  <th style="padding:14px 16px;font-weight:700;">Telefon</th>
+                  <th style="padding:14px 16px;font-weight:700;">Kenderaan</th>
+                  <th style="padding:14px 16px;font-weight:700;">Tarikh Ketibaan</th>
+                  <th style="padding:14px 16px;font-weight:700;">Status</th>
+                  <th style="padding:14px 16px;font-weight:700;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ leads }}" as="lead" hint-placeholder-count="3">
+                  <tr style="border-top:1px solid rgba(255,255,255,0.06);">
+                    <td style="padding:14px 16px;">{{ lead.fullName }}</td>
+                    <td style="padding:14px 16px;">{{ lead.phone }}</td>
+                    <td style="padding:14px 16px;">{{ lead.vehicle }}</td>
+                    <td style="padding:14px 16px;">{{ lead.arrivalDate }}</td>
+                    <td style="padding:14px 16px;">{{ lead.status }}</td>
+                    <td style="padding:14px 16px;">
+                      <button type="button" onClick="{{ lead.onView }}" style="background:transparent;border:1px solid rgba(255,255,255,0.15);color:#fff;font-size:12px;font-weight:600;padding:7px 12px;border-radius:7px;cursor:pointer;">Lihat</button>
+                    </td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ hasSelectedLead }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:24px;display:grid;gap:14px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <p style="margin:0;font-size:17px;font-weight:800;">Detail Pelanggan</p>
+                <button type="button" onClick="{{ closeLead }}" style="background:transparent;border:none;color:rgba(255,255,255,0.5);font-size:13px;cursor:pointer;">Tutup ✕</button>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;font-size:13.5px;">
+                <sc-for list="{{ selectedLeadRows }}" as="row" hint-placeholder-count="10">
+                  <div>
+                    <p style="margin:0 0 2px;font-size:11.5px;font-weight:700;letter-spacing:0.03em;color:rgba(255,255,255,0.45);">{{ row.label }}</p>
+                    <p style="margin:0;color:#fff;">{{ row.value }}</p>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isPixels }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;gap:20px;max-width:560px;">
+          <h1 style="margin:0;font-size:26px;font-weight:800;">Tetapan Pixel &amp; Tracking</h1>
+          <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.5);">Masukkan Pixel ID untuk setiap platform. ID ini akan digunakan pada Landing Page apabila disambungkan ke backend.</p>
+          <div style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:24px;display:grid;gap:16px;">
+            <label style="display:grid;gap:6px;font-size:13px;font-weight:600;">Facebook / Meta Pixel ID
+              <input type="text" value="{{ pixelForm.meta }}" onChange="{{ setPixelMeta }}" placeholder="Contoh: 1234567890123456" style="{{ loginInputStyle }}">
+            </label>
+            <label style="display:grid;gap:6px;font-size:13px;font-weight:600;">Google Ads Conversion ID
+              <input type="text" value="{{ pixelForm.google }}" onChange="{{ setPixelGoogle }}" placeholder="Contoh: AW-123456789" style="{{ loginInputStyle }}">
+            </label>
+            <label style="display:grid;gap:6px;font-size:13px;font-weight:600;">TikTok Pixel ID
+              <input type="text" value="{{ pixelForm.tiktok }}" onChange="{{ setPixelTiktok }}" placeholder="Contoh: CXXXXXXXXXXXXXX" style="{{ loginInputStyle }}">
+            </label>
+            <button type="button" onClick="{{ savePixels }}" style="justify-self:start;background:#E31E24;color:#fff;font-weight:700;font-size:13.5px;padding:12px 22px;border-radius:9px;border:none;cursor:pointer;">SIMPAN</button>
+            <sc-if value="{{ pixelSaved }}" hint-placeholder-val="{{ false }}">
+              <p style="margin:0;font-size:12.5px;color:#4ade80;">Disimpan.</p>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isEditPage }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;gap:20px;max-width:640px;">
+          <h1 style="margin:0;font-size:26px;font-weight:800;">Edit Landing Page</h1>
+          <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.5);">Kemaskini maklumat hubungan yang dipaparkan &amp; digunakan pada Landing Page. Untuk edit teks/gambar terus, buka Landing Page dan klik terus pada elemen berkenaan.</p>
+          <div style="background:#141414;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:24px;display:grid;gap:16px;">
+            <label style="display:grid;gap:6px;font-size:13px;font-weight:600;">Nombor WhatsApp Admin
+              <input type="text" value="{{ pageForm.whatsappNumber }}" onChange="{{ setPageWhatsapp }}" placeholder="60123456789" style="{{ loginInputStyle }}">
+            </label>
+            <label style="display:grid;gap:6px;font-size:13px;font-weight:600;">Email Admin (untuk notifikasi)
+              <input type="email" value="{{ pageForm.adminEmail }}" onChange="{{ setPageEmail }}" placeholder="sewolah@gmail.com" style="{{ loginInputStyle }}">
+            </label>
+            <button type="button" onClick="{{ savePageSettings }}" style="justify-self:start;background:#E31E24;color:#fff;font-weight:700;font-size:13.5px;padding:12px 22px;border-radius:9px;border:none;cursor:pointer;">SIMPAN</button>
+            <sc-if value="{{ pageSaved }}" hint-placeholder-val="{{ false }}">
+              <p style="margin:0;font-size:12.5px;color:#4ade80;">Disimpan &amp; digunakan pada Landing Page.</p>
+            </sc-if>
+            <a href="SEWOLAH Landing Page.dc.html" style="justify-self:start;font-size:13px;color:#E31E24;font-weight:700;">Buka Landing Page →</a>
+          </div>
+        </div>
+      </sc-if>
+
+    </main>
+  </div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{}}">
+class Component extends DCLogic {
+  state = {
+    loggedIn: false,
+    loginUser: '', loginPass: '', loginError: false,
+    tab: 'dashboard',
+    leads: [],
+    selectedLeadIdx: null,
+    pixelForm: { meta: '', google: '', tiktok: '' },
+    pixelSaved: false,
+    pageForm: { whatsappNumber: '601116946696', adminEmail: 'sewolah@gmail.com' },
+    pageSaved: false,
+    dashboardRange: 'week',
+    customFrom: '', customTo: ''
+  };
+
+  componentDidMount() {
+    try {
+      const leads = JSON.parse(localStorage.getItem('sewolah_leads') || '[]');
+      this.setState({ leads });
+    } catch (e) {}
+    try {
+      const px = JSON.parse(localStorage.getItem('sewolah_pixels') || '{}');
+      this.setState(s => ({ pixelForm: { ...s.pixelForm, ...px } }));
+    } catch (e) {}
+    try {
+      const settings = JSON.parse(localStorage.getItem('sewolah_settings') || '{}');
+      this.setState(s => ({ pageForm: { ...s.pageForm, ...settings } }));
+    } catch (e) {}
+  }
+
+  setLoginUser = (e) => this.setState({ loginUser: e.target.value, loginError: false });
+  setLoginPass = (e) => this.setState({ loginPass: e.target.value, loginError: false });
+
+  handleLogin = (e) => {
+    e.preventDefault();
+    if (this.state.loginUser === 'admin' && this.state.loginPass === 'sewolah2026') {
+      this.setState({ loggedIn: true, loginError: false });
+    } else {
+      this.setState({ loginError: true });
+    }
+  };
+
+  handleLogout = () => this.setState({ loggedIn: false, loginUser: '', loginPass: '' });
+
+  goTab(tab) { this.setState({ tab, selectedLeadIdx: null, pixelSaved: false, pageSaved: false }); }
+
+  setRange(r) { this.setState({ dashboardRange: r }); }
+  setCustomFrom = (e) => this.setState({ customFrom: e.target.value });
+  setCustomTo = (e) => this.setState({ customTo: e.target.value });
+
+  viewLead(idx) { this.setState({ selectedLeadIdx: idx }); }
+  closeLead = () => this.setState({ selectedLeadIdx: null });
+
+  setPixel(field) {
+    return (e) => this.setState(s => ({ pixelForm: { ...s.pixelForm, [field]: e.target.value } }));
+  }
+  savePixels = () => {
+    localStorage.setItem('sewolah_pixels', JSON.stringify(this.state.pixelForm));
+    this.setState({ pixelSaved: true });
+  };
+
+  setPageField(field) {
+    return (e) => this.setState(s => ({ pageForm: { ...s.pageForm, [field]: e.target.value } }));
+  }
+  savePageSettings = () => {
+    localStorage.setItem('sewolah_settings', JSON.stringify(this.state.pageForm));
+    this.setState({ pageSaved: true });
+  };
+
+  renderVals() {
+    const { tab, leads, selectedLeadIdx, pixelForm, pageForm } = this.state;
+    const loginInputStyle = 'width:100%;box-sizing:border-box;padding:12px 14px;border-radius:9px;border:1px solid rgba(255,255,255,0.15);font-size:14px;font-family:inherit;background:#0A0A0A;color:#fff;';
+
+    const navDefs = [
+      { key: 'dashboard', label: 'Dashboard' },
+      { key: 'bookings', label: 'Tempahan & Pelanggan' },
+      { key: 'pixels', label: 'Tetapan Pixel' },
+      { key: 'editpage', label: 'Edit Landing Page' }
+    ];
+    const navItems = navDefs.map(n => ({
+      label: n.label,
+      onClick: () => this.goTab(n.key),
+      style: `width:100%;text-align:left;background:${tab===n.key?'#E31E24':'transparent'};border:none;color:#fff;font-size:13.5px;font-weight:700;padding:11px 12px;border-radius:8px;cursor:pointer;`
+    }));
+
+    const todayStr = new Date().toISOString().slice(0,10);
+    const leadsToday = leads.filter(l => (l.submittedAt||'').slice(0,10) === todayStr).length;
+
+    const { dashboardRange, customFrom, customTo } = this.state;
+    const dayMs = 86400000;
+    const now = new Date();
+    let rangeStart, rangeEnd = now;
+    const midnight = (d) => { const m = new Date(d); m.setHours(0,0,0,0); return m; };
+    if (dashboardRange === 'week') { rangeStart = midnight(new Date(now.getTime() - 6*dayMs)); }
+    else if (dashboardRange === 'month') { rangeStart = midnight(new Date(now.getTime() - 29*dayMs)); }
+    else { rangeStart = midnight(customFrom ? new Date(customFrom) : new Date(now.getTime() - 6*dayMs)); rangeEnd = customTo ? new Date(customTo) : now; }
+
+    const inRange = (l) => { const t = l.submittedAt ? new Date(l.submittedAt) : null; return t && t >= rangeStart && t <= new Date(rangeEnd.getTime() + dayMs - 1); };
+    const rangeLeads = leads.filter(inRange);
+
+    let buckets;
+    if (dashboardRange === 'week' || dashboardRange === 'month') {
+      const numDays = dashboardRange === 'week' ? 7 : 30;
+      const daysPerBucket = dashboardRange === 'week' ? 1 : 5;
+      const numBuckets = Math.ceil(numDays / daysPerBucket);
+      buckets = Array.from({ length: numBuckets }, (_, i) => {
+        const bStart = new Date(rangeStart.getTime() + i * daysPerBucket * dayMs);
+        const bEnd = new Date(rangeStart.getTime() + (i + 1) * daysPerBucket * dayMs);
+        const count = leads.filter(l => { const t = l.submittedAt ? new Date(l.submittedAt) : null; return t && t >= bStart && t < bEnd; }).length;
+        const label = daysPerBucket === 1
+          ? bStart.toLocaleDateString('ms-MY', { weekday: 'short' })
+          : bStart.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short' });
+        return { count, label };
+      });
+    } else {
+      const spanDays = Math.max(1, Math.round((rangeEnd - rangeStart) / dayMs) + 1);
+      const numBuckets = Math.min(10, Math.max(3, spanDays));
+      const daysPerBucket = Math.max(1, Math.ceil(spanDays / numBuckets));
+      buckets = Array.from({ length: numBuckets }, (_, i) => {
+        const bStart = new Date(rangeStart.getTime() + i * daysPerBucket * dayMs);
+        const bEnd = new Date(rangeStart.getTime() + (i + 1) * daysPerBucket * dayMs);
+        const count = leads.filter(l => { const t = l.submittedAt ? new Date(l.submittedAt) : null; return t && t >= bStart && t < bEnd; }).length;
+        const label = bStart.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short' });
+        return { count, label };
+      });
+    }
+    const maxCount = Math.max(1, ...buckets.map(b => b.count));
+    const chartBars = buckets.map(b => ({ ...b, height: `${Math.max(6, Math.round((b.count / maxCount) * 130))}px` }));
+
+    const rangeLabelMap = { week: '7 Hari Terakhir', month: '30 Hari Terakhir', custom: 'Tempoh Pilihan' };
+    const rangeDefs = [
+      { key: 'week', label: 'Mingguan' },
+      { key: 'month', label: 'Bulanan' },
+      { key: 'custom', label: 'Custom' }
+    ];
+    const rangeOptions = rangeDefs.map(r => ({
+      label: r.label,
+      onClick: () => this.setRange(r.key),
+      style: `background:${dashboardRange===r.key?'#E31E24':'transparent'};color:#fff;border:1px solid ${dashboardRange===r.key?'#E31E24':'rgba(255,255,255,0.15)'};font-size:12.5px;font-weight:700;padding:9px 14px;border-radius:8px;cursor:pointer;`
+    }));
+    const dateInputStyle = 'padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:#0A0A0A;color:#fff;font-size:12.5px;font-family:inherit;';
+
+    const vehicleCounts = {};
+    rangeLeads.forEach(l => { const v = l.vehicle || 'Tidak Dinyatakan'; vehicleCounts[v] = (vehicleCounts[v] || 0) + 1; });
+    const vehicleTotal = Object.values(vehicleCounts).reduce((a,b) => a+b, 0) || 1;
+    const vehicleBreakdown = Object.entries(vehicleCounts).sort((a,b) => b[1]-a[1]).map(([label, count]) => ({ label, count, pct: `${Math.round(count/vehicleTotal*100)}%` }));
+
+    const leadsCount = rangeLeads.length;
+    const funnelSteps = [
+      { label: 'FORM START', value: String(Math.round(leadsCount * 1.4)) },
+      { label: 'BORANG SIAP', value: String(leadsCount) },
+      { label: 'WHATSAPP DIBUKA', value: String(leadsCount) },
+      { label: 'BOOKING DISAHKAN', value: String(rangeLeads.filter(l => l.status === 'Disahkan').length) }
+    ];
+
+    const selectedLead = selectedLeadIdx !== null ? leads[selectedLeadIdx] : null;
+    const selectedLeadRows = selectedLead ? [
+      { label: 'Nama', value: selectedLead.fullName },
+      { label: 'Telefon', value: selectedLead.phone },
+      { label: 'Datang Dari', value: selectedLead.origin },
+      { label: 'Airport', value: selectedLead.airport },
+      { label: 'Tarikh Ketibaan', value: `${selectedLead.arrivalDate} ${selectedLead.arrivalTime}` },
+      { label: 'Tarikh Tamat Sewa', value: selectedLead.endDate },
+      { label: 'Tujuan', value: selectedLead.purpose },
+      { label: 'Kenderaan', value: selectedLead.vehicle },
+      { label: 'Penumpang', value: selectedLead.passengers },
+      { label: 'Luggage', value: selectedLead.luggage },
+      { label: 'Destinasi', value: selectedLead.destination },
+      { label: 'Catatan', value: selectedLead.notes || '-' }
+    ] : [];
+
+    return {
+      notLoggedIn: !this.state.loggedIn,
+      isLoggedIn: this.state.loggedIn,
+      loginUser: this.state.loginUser, loginPass: this.state.loginPass, loginError: this.state.loginError,
+      setLoginUser: this.setLoginUser, setLoginPass: this.setLoginPass, handleLogin: this.handleLogin, handleLogout: this.handleLogout,
+      loginInputStyle,
+      navItems,
+      isDashboard: tab === 'dashboard', isBookings: tab === 'bookings', isPixels: tab === 'pixels', isEditPage: tab === 'editpage',
+      statCards: [
+        { label: 'JUMLAH LEADS', value: String(leads.length), sub: `${rangeLeads.length} dalam tempoh ini`, accent: '#E31E24', trend: leadsToday > 0 ? `+${leadsToday} hari ini` : '—', trendColor: leadsToday > 0 ? '#4ade80' : 'rgba(255,255,255,0.35)' },
+        { label: 'LEADS TEMPOH INI', value: String(rangeLeads.length), sub: rangeLabelMap[dashboardRange], accent: '#3b82f6', trend: rangeLabelMap[dashboardRange], trendColor: 'rgba(255,255,255,0.35)' },
+        { label: 'WHATSAPP OPENS', value: String(leads.length), sub: 'Setiap lead membuka WhatsApp', accent: '#25D366', trend: '100%', trendColor: '#4ade80' },
+        { label: 'BOOKING DISAHKAN', value: String(leads.filter(l=>l.status==='Disahkan').length), sub: 'Status: Disahkan', accent: '#f59e0b', trend: `${leads.length ? Math.round(leads.filter(l=>l.status==='Disahkan').length/leads.length*100) : 0}%`, trendColor: 'rgba(255,255,255,0.35)' }
+      ],
+      hasLeads: leads.length > 0, noLeads: leads.length === 0,
+      hasRangeLeads: rangeLeads.length > 0, noRangeLeads: rangeLeads.length === 0,
+      rangeOptions, isCustomRange: dashboardRange === 'custom',
+      customFrom: this.state.customFrom, customTo: this.state.customTo,
+      setCustomFrom: this.setCustomFrom, setCustomTo: this.setCustomTo, dateInputStyle,
+      rangeLabel: rangeLabelMap[dashboardRange],
+      chartBars, vehicleBreakdown, funnelSteps,
+      recentNotifications: leads.slice(0,3).map(l => ({ text: `${l.fullName || 'Pelanggan'} — tempahan ${l.vehicle || ''} (${(l.submittedAt||'').slice(0,10)})` })),
+      leads: leads.map((l, i) => ({ ...l, onView: () => this.viewLead(i) })),
+      hasSelectedLead: !!selectedLead,
+      selectedLeadRows,
+      closeLead: this.closeLead,
+      pixelForm,
+      setPixelMeta: this.setPixel('meta'), setPixelGoogle: this.setPixel('google'), setPixelTiktok: this.setPixel('tiktok'),
+      savePixels: this.savePixels, pixelSaved: this.state.pixelSaved,
+      pageForm,
+      setPageWhatsapp: this.setPageField('whatsappNumber'), setPageEmail: this.setPageField('adminEmail'),
+      savePageSettings: this.savePageSettings, pageSaved: this.state.pageSaved
+    };
+  }
+}
+</script>
+</body>
+</html>
