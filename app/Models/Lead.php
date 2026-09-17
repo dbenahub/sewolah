@@ -10,7 +10,7 @@ class Lead extends Model
     use HasFactory;
 
     protected $fillable = [
-        'full_name', 'phone', 'origin', 'airport', 'arrival_date', 'arrival_time',
+        'full_name', 'phone', 'email', 'origin', 'airport', 'arrival_date', 'arrival_time',
         'end_date', 'purpose', 'vehicle_id', 'vehicle_name_snapshot', 'other_vehicle_model',
         'passengers', 'luggage', 'destination', 'notes', 'consent', 'status', 'locale',
         'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',

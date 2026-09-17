@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Public;
 
+use App\Mail\CustomerBookingConfirmation;
 use App\Mail\NewLeadNotification;
 use App\Models\Lead;
 use App\Models\PageSetting;
@@ -26,7 +27,7 @@ class BookingForm extends Component
     public string $endDate = '';
 
     // Step 2
-    public ?int $vehicleId = null;
+    public ?string $vehicleId = null;
     public string $otherVehicleModel = '';
     public string $passengers = '';
     public string $luggage = '';
@@ -35,6 +36,7 @@ class BookingForm extends Component
     // Step 3
     public string $fullName = '';
     public string $phone = '';
+    public string $email = '';
     public string $notes = '';
     public bool $consent = false;
 
@@ -43,15 +45,13 @@ class BookingForm extends Component
 
     public function selectVehicle(int $vehicleId)
     {
-        $this->vehicleId = $vehicleId;
+        $this->vehicleId = (string) $vehicleId;
         $this->dispatch('scroll-to-booking-form');
     }
 
     protected function isOtherVehicle(): bool
     {
-        $vehicle = $this->vehicleId ? Vehicle::find($this->vehicleId) : null;
-
-        return $vehicle && str_contains(strtolower($vehicle->name), 'other');
+        return $this->vehicleId === 'other';
     }
 
     public function rulesForStep(int $step): array
@@ -75,6 +75,7 @@ class BookingForm extends Component
             3 => [
                 'fullName' => ['required', 'string', 'max:150'],
                 'phone' => ['required', 'regex:/^(\+?6?01)[0-46-9]-*[0-9]{7,8}$/'],
+                'email' => ['required', 'email', 'max:150'],
                 'notes' => ['nullable', 'string', 'max:1000'],
                 'consent' => ['accepted'],
             ],
@@ -111,12 +112,13 @@ class BookingForm extends Component
 
         $this->validate($this->rulesForStep(3));
 
-        $vehicle = $this->vehicleId ? Vehicle::find($this->vehicleId) : null;
+        $vehicle = ($this->vehicleId && ! $this->isOtherVehicle()) ? Vehicle::find($this->vehicleId) : null;
         $utm = session('utm', []);
 
         $lead = Lead::create([
             'full_name' => $this->fullName,
             'phone' => $this->phone,
+            'email' => $this->email,
             'origin' => $this->origin,
             'airport' => $this->airport,
             'arrival_date' => $this->arrivalDate,
@@ -144,17 +146,25 @@ class BookingForm extends Component
             'submitted_at' => now(),
         ]);
 
+        $waNumber = PageSetting::current()->whatsapp_number;
+        $whatsappUrl = $this->buildWhatsappUrl($lead, $waNumber);
+
         try {
             $settings = PageSetting::current();
-            Mail::to($settings->admin_notification_email)->queue(new NewLeadNotification($lead));
+            Mail::to($settings->admin_notification_email)->send(new NewLeadNotification($lead));
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
+        try {
+            Mail::to($lead->email)->send(new CustomerBookingConfirmation($lead, $whatsappUrl));
         } catch (\Throwable $e) {
             report($e);
         }
 
         $this->submitted = true;
 
-        $waNumber = PageSetting::current()->whatsapp_number;
-        $this->dispatch('open-whatsapp', url: $this->buildWhatsappUrl($lead, $waNumber));
+        $this->dispatch('open-whatsapp', url: $whatsappUrl);
         $this->dispatch('lead-submitted');
     }
 
@@ -162,6 +172,7 @@ class BookingForm extends Component
     {
         $message = __('landing.whatsapp_message', [
             'name' => $lead->full_name,
+            'email' => $lead->email,
             'origin' => $lead->origin,
             'airport' => $lead->airport,
             'arrival' => trim($lead->arrival_date?->format('d/m/Y').' '.$lead->arrival_time),

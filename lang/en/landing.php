@@ -118,6 +118,7 @@ return [
             'arrival_time' => 'Arrival Time',
             'end_date' => 'Rental End Date',
             'vehicle' => 'Preferred Vehicle',
+            'vehicle_other_option' => 'Other (Please Specify)',
             'other_vehicle' => 'Model / Type Of Car You Need',
             'other_vehicle_ph' => 'e.g. Honda CR-V',
             'passengers' => 'Number of Passengers',
@@ -129,6 +130,8 @@ return [
             'full_name_ph' => 'Full name',
             'phone' => 'Mobile / WhatsApp Number',
             'phone_ph' => 'e.g. 0123456789',
+            'email' => 'Email Address',
+            'email_ph' => 'e.g. name@email.com',
             'notes' => 'Additional Notes',
             'notes_ph' => 'Any additional requirements',
             'consent' => 'I agree to be contacted by the SEWOLAH team regarding this booking.',
@@ -142,7 +145,7 @@ return [
         'luggage_options' => ['Light', 'Medium', 'Heavy', 'Not Sure'],
     ],
 
-    'whatsapp_message' => "Hi SEWOLAH, I have submitted a booking enquiry for my trip to KL.\nName: :name\nComing From: :origin\nAirport: :airport\nArrival Date/Time: :arrival\nRental End Date: :end_date\nPurpose: :purpose\nPreferred Vehicle: :vehicle\nOther Model: :other_vehicle\nPassengers: :passengers\nLuggage: :luggage\nMain Destination: :destination\nNotes: :notes\n\nCould the SEWOLAH team help check availability and share more info for my booking?",
+    'whatsapp_message' => "Hi SEWOLAH, I have submitted a booking enquiry for my trip to KL.\nName: :name\nEmail: :email\nComing From: :origin\nAirport: :airport\nArrival Date/Time: :arrival\nRental End Date: :end_date\nPurpose: :purpose\nPreferred Vehicle: :vehicle\nOther Model: :other_vehicle\nPassengers: :passengers\nLuggage: :luggage\nMain Destination: :destination\nNotes: :notes\n\nCould the SEWOLAH team help check availability and share more info for my booking?",
 
     'final_cta' => [
         'title' => "No Need To Drive All The Way To KL.",

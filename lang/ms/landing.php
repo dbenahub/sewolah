@@ -118,6 +118,7 @@ return [
             'arrival_time' => 'Arrival Time',
             'end_date' => 'Rental End Date',
             'vehicle' => 'Preferred Vehicle',
+            'vehicle_other_option' => 'Lain-lain (Nyatakan)',
             'other_vehicle' => 'Model / Jenis Kereta Yang Dicari',
             'other_vehicle_ph' => 'Contoh: Honda CR-V',
             'passengers' => 'Number of Passengers',
@@ -129,6 +130,8 @@ return [
             'full_name_ph' => 'Nama penuh',
             'phone' => 'Mobile / WhatsApp Number',
             'phone_ph' => 'Contoh: 0123456789',
+            'email' => 'Alamat Email',
+            'email_ph' => 'Contoh: nama@email.com',
             'notes' => 'Additional Notes',
             'notes_ph' => 'Sebarang keperluan tambahan',
             'consent' => 'Saya bersetuju untuk dihubungi oleh team SEWOLAH berkaitan tempahan ini.',
@@ -142,7 +145,7 @@ return [
         'luggage_options' => ['Light', 'Medium', 'Heavy', 'Not Sure'],
     ],
 
-    'whatsapp_message' => "Hi SEWOLAH, saya telah isi borang tempahan untuk trip saya ke KL.\nNama: :name\nDatang Dari: :origin\nAirport: :airport\nTarikh/Masa Ketibaan: :arrival\nTarikh Tamat Sewa: :end_date\nTujuan: :purpose\nKenderaan Pilihan: :vehicle\nModel Lain: :other_vehicle\nJumlah Penumpang: :passengers\nLuggage: :luggage\nLokasi Utama: :destination\nCatatan: :notes\n\nBoleh team SEWOLAH bantu semak availability dan berikan info lanjut untuk tempahan saya?",
+    'whatsapp_message' => "Hi SEWOLAH, saya telah isi borang tempahan untuk trip saya ke KL.\nNama: :name\nEmail: :email\nDatang Dari: :origin\nAirport: :airport\nTarikh/Masa Ketibaan: :arrival\nTarikh Tamat Sewa: :end_date\nTujuan: :purpose\nKenderaan Pilihan: :vehicle\nModel Lain: :other_vehicle\nJumlah Penumpang: :passengers\nLuggage: :luggage\nLokasi Utama: :destination\nCatatan: :notes\n\nBoleh team SEWOLAH bantu semak availability dan berikan info lanjut untuk tempahan saya?",
 
     'final_cta' => [
         'title' => 'Tak Perlu Drive Jauh Ke KL.',

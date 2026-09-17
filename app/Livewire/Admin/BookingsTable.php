@@ -42,10 +42,10 @@ class BookingsTable extends Component
 
         return response()->streamDownload(function () use ($leads) {
             $out = fopen('php://output', 'w');
-            fputcsv($out, ['Nama', 'Telefon', 'Kenderaan', 'Tarikh Ketibaan', 'Status', 'Tarikh Submit']);
+            fputcsv($out, ['Nama', 'Telefon', 'Email', 'Kenderaan', 'Tarikh Ketibaan', 'Status', 'Tarikh Submit']);
             foreach ($leads as $lead) {
                 fputcsv($out, [
-                    $lead->full_name, $lead->phone, $lead->vehicle_name_snapshot,
+                    $lead->full_name, $lead->phone, $lead->email, $lead->vehicle_name_snapshot,
                     $lead->arrival_date, $lead->status, $lead->submitted_at,
                 ]);
             }
@@ -59,6 +59,7 @@ class BookingsTable extends Component
             ->when($this->search, fn ($q) => $q->where(fn ($q2) => $q2
                 ->where('full_name', 'like', "%{$this->search}%")
                 ->orWhere('phone', 'like', "%{$this->search}%")
+                ->orWhere('email', 'like', "%{$this->search}%")
             ))
             ->when($this->statusFilter, fn ($q) => $q->where('status', $this->statusFilter))
             ->orderByDesc('submitted_at')

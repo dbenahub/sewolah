@@ -7,6 +7,6 @@ return [
 
     'sewolah' => [
         'whatsapp' => env('SEWOLAH_WHATSAPP_NUMBER', '601116946696'),
-        'email' => env('SEWOLAH_ADMIN_EMAIL', 'sewolah@gmail.com'),
+        'email' => env('SEWOLAH_ADMIN_EMAIL', 'sewolah.hq@gmail.com'),
     ],
 ];

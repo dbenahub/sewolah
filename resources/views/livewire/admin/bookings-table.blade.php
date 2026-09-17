@@ -62,7 +62,7 @@
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5 text-[13.5px]">
         @foreach([
-          'Nama' => $selectedLead->full_name, 'Telefon' => $selectedLead->phone,
+          'Nama' => $selectedLead->full_name, 'Telefon' => $selectedLead->phone, 'Email' => $selectedLead->email ?: '-',
           'Datang Dari' => $selectedLead->origin, 'Airport' => $selectedLead->airport,
           'Tarikh Ketibaan' => optional($selectedLead->arrival_date)->format('d/m/Y').' '.$selectedLead->arrival_time,
           'Tarikh Tamat Sewa' => optional($selectedLead->end_date)->format('d/m/Y'),

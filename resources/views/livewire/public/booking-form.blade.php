@@ -68,15 +68,19 @@
       <div class="grid gap-4">
         <p class="m-0 text-base font-extrabold">{{ __('landing.booking.step2_title') }}</p>
         <label class="grid gap-1.5 text-[13px] font-semibold">{{ __('landing.booking.fields.vehicle') }}
-          <select wire:model="vehicleId" class="w-full box-border px-3.5 py-3 rounded-lg border border-black/15 text-sm">
+          <select wire:model.live="vehicleId" class="w-full box-border px-3.5 py-3 rounded-lg border border-black/15 text-sm">
             <option value="">--</option>
             @foreach($this->vehicleOptions as $opt)<option value="{{ $opt->id }}">{{ $opt->name }}</option>@endforeach
+            <option value="other">{{ __('landing.booking.fields.vehicle_other_option') }}</option>
           </select>
           @error('vehicleId') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
         </label>
-        <label class="grid gap-1.5 text-[13px] font-semibold">{{ __('landing.booking.fields.other_vehicle') }}
-          <input type="text" wire:model="otherVehicleModel" placeholder="{{ __('landing.booking.fields.other_vehicle_ph') }}" class="w-full box-border px-3.5 py-3 rounded-lg border border-black/15 text-sm">
-        </label>
+        @if($vehicleId === 'other')
+          <label class="grid gap-1.5 text-[13px] font-semibold">{{ __('landing.booking.fields.other_vehicle') }}
+            <input type="text" wire:model="otherVehicleModel" placeholder="{{ __('landing.booking.fields.other_vehicle_ph') }}" class="w-full box-border px-3.5 py-3 rounded-lg border border-black/15 text-sm">
+            @error('otherVehicleModel') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+          </label>
+        @endif
         <div class="grid sm:grid-cols-2 gap-4">
           <label class="grid gap-1.5 text-[13px] font-semibold">{{ __('landing.booking.fields.passengers') }}
             <input type="number" min="1" wire:model="passengers" placeholder="{{ __('landing.booking.fields.passengers_ph') }}" class="w-full box-border px-3.5 py-3 rounded-lg border border-black/15 text-sm">
@@ -110,6 +114,10 @@
         <label class="grid gap-1.5 text-[13px] font-semibold">{{ __('landing.booking.fields.phone') }}
           <input type="tel" wire:model="phone" placeholder="{{ __('landing.booking.fields.phone_ph') }}" class="w-full box-border px-3.5 py-3 rounded-lg border border-black/15 text-sm">
           @error('phone') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+        </label>
+        <label class="grid gap-1.5 text-[13px] font-semibold">{{ __('landing.booking.fields.email') }}
+          <input type="email" wire:model="email" placeholder="{{ __('landing.booking.fields.email_ph') }}" class="w-full box-border px-3.5 py-3 rounded-lg border border-black/15 text-sm">
+          @error('email') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
         </label>
         <label class="grid gap-1.5 text-[13px] font-semibold">{{ __('landing.booking.fields.notes') }}
           <textarea wire:model="notes" rows="3" placeholder="{{ __('landing.booking.fields.notes_ph') }}" class="w-full box-border px-3.5 py-3 rounded-lg border border-black/15 text-sm resize-y"></textarea>
