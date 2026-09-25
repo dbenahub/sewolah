@@ -243,7 +243,7 @@
       document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth' });
     });
     window.addEventListener('open-whatsapp', (e) => {
-      window.open(e.detail.url, '_blank');
+      window.location.href = e.detail.url;
     });
   </script>
 </div>
