@@ -35,6 +35,8 @@ class LandingPage extends Component
             'vehicles' => Vehicle::where('is_active', true)->where('is_featured', true)->orderBy('sort_order')->get(),
             'pageSettings' => PageSetting::current(),
             'pixelSettings' => PixelSetting::current(),
-        ])->layout('layouts.public');
+        ])->layout('layouts.public', [
+            'pixelSettings' => PixelSetting::current(),
+        ]);
     }
 }
