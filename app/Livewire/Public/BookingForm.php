@@ -9,6 +9,7 @@ use App\Models\PageSetting;
 use App\Models\Vehicle;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -165,7 +166,7 @@ class BookingForm extends Component
         $this->submitted = true;
 
         $this->dispatch('open-whatsapp', url: $whatsappUrl);
-        $this->dispatch('lead-submitted');
+        $this->dispatch('lead-submitted', eventId: 'lead_'.$lead->id.'_'.Str::uuid());
     }
 
     protected function buildWhatsappUrl(Lead $lead, string $number): string

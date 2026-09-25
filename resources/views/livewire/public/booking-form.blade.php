@@ -51,9 +51,11 @@
         <div class="grid sm:grid-cols-3 gap-4">
           <label class="grid gap-1.5 text-[13px] font-semibold">{{ __('landing.booking.fields.arrival_date') }}
             <input type="date" wire:model="arrivalDate" class="w-full box-border px-3.5 py-3 rounded-lg border border-black/15 text-sm">
+            @error('arrivalDate') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
           </label>
           <label class="grid gap-1.5 text-[13px] font-semibold">{{ __('landing.booking.fields.arrival_time') }}
             <input type="time" wire:model="arrivalTime" class="w-full box-border px-3.5 py-3 rounded-lg border border-black/15 text-sm">
+            @error('arrivalTime') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
           </label>
           <label class="grid gap-1.5 text-[13px] font-semibold">{{ __('landing.booking.fields.end_date') }}
             <input type="date" wire:model="endDate" class="w-full box-border px-3.5 py-3 rounded-lg border border-black/15 text-sm">
@@ -91,6 +93,7 @@
               <option value="">--</option>
               @foreach(__('landing.booking.luggage_options') as $opt)<option value="{{ $opt }}">{{ $opt }}</option>@endforeach
             </select>
+            @error('luggage') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
           </label>
         </div>
         <label class="grid gap-1.5 text-[13px] font-semibold">{{ __('landing.booking.fields.destination') }}
@@ -124,7 +127,7 @@
         </label>
         <label class="flex gap-2.5 items-start text-[13px] leading-relaxed text-black/70">
           <input type="checkbox" wire:model="consent" class="mt-0.5 w-4 h-4">
-          {{ __('landing.booking.fields.consent') }}
+          <span>{{ __('landing.booking.fields.consent') }} <a href="{{ route('privacy-policy') }}" target="_blank" class="font-semibold underline">{{ __('landing.footer.privacy') }}</a>.</span>
         </label>
         @error('consent') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
         <div class="flex gap-3">

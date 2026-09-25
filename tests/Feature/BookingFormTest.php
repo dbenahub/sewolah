@@ -43,7 +43,8 @@ class BookingFormTest extends TestCase
             ->set('email', 'ahmad@example.com')
             ->set('consent', true)
             ->call('submit')
-            ->assertSet('submitted', true);
+            ->assertSet('submitted', true)
+            ->assertDispatched('lead-submitted');
 
         $this->assertDatabaseHas('leads', [
             'full_name' => 'Ahmad Test',
@@ -54,6 +55,12 @@ class BookingFormTest extends TestCase
 
         Mail::assertSent(NewLeadNotification::class);
         Mail::assertSent(CustomerBookingConfirmation::class);
+    }
+
+    public function test_legal_pages_are_available(): void
+    {
+        $this->get('/privacy-policy')->assertOk()->assertSee('Polisi Privasi');
+        $this->get('/terms')->assertOk()->assertSee('Terma dan Syarat');
     }
 
     public function test_other_vehicle_requires_model_name(): void

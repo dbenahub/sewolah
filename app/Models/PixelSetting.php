@@ -10,6 +10,12 @@ class PixelSetting extends Model
 
     public static function current(): self
     {
-        return static::firstOrCreate(['id' => 1]);
+        $settings = static::firstOrCreate(['id' => 1]);
+
+        if (blank($settings->meta_pixel_id) && filled(config('services.meta.pixel_id'))) {
+            $settings->meta_pixel_id = (string) config('services.meta.pixel_id');
+        }
+
+        return $settings;
     }
 }

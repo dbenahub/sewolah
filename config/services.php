@@ -1,6 +1,10 @@
 <?php
 
 return [
+
+    'meta' => [
+        'pixel_id' => env('META_PIXEL_ID'),
+    ],
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],

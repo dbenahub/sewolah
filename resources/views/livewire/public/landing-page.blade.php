@@ -211,8 +211,8 @@
         <a href="#kereta" class="text-[13px] text-white/60">{{ __('landing.nav.vehicles') }}</a>
         <a href="#cara" class="text-[13px] text-white/60">{{ __('landing.nav.how') }}</a>
         <a href="#booking-form" class="text-[13px] text-white/60">{{ __('landing.nav.booking') }}</a>
-        <a href="{{ url('/privacy-policy') }}" class="text-[13px] text-white/60">{{ __('landing.footer.privacy') }}</a>
-        <a href="{{ url('/terms') }}" class="text-[13px] text-white/60">{{ __('landing.footer.terms') }}</a>
+        <a href="{{ route('privacy-policy') }}" class="text-[13px] text-white/60">{{ __('landing.footer.privacy') }}</a>
+        <a href="{{ route('terms') }}" class="text-[13px] text-white/60">{{ __('landing.footer.terms') }}</a>
       </div>
       <div class="grid gap-2.5 content-start">
         <p class="m-0 mb-1 text-[13px] font-bold tracking-wide">{{ __('landing.footer.partner_title') }}</p>

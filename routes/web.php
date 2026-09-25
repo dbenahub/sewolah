@@ -7,6 +7,7 @@ use App\Livewire\Admin\PageSettings;
 use App\Livewire\Admin\PixelSettings;
 use App\Livewire\Admin\VehicleManager;
 use App\Livewire\Public\LandingPage;
+use App\Http\Controllers\LegalPageController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +17,9 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::get('/', LandingPage::class)->name('landing');
+
+Route::get('/privacy-policy', [LegalPageController::class, 'privacy'])->name('privacy-policy');
+Route::get('/terms', [LegalPageController::class, 'terms'])->name('terms');
 
 Route::get('/lang/{locale}', function (string $locale) {
     if (in_array($locale, ['ms', 'en'])) {
