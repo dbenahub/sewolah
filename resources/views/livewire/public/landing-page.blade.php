@@ -2,7 +2,7 @@
   {{-- HEADER --}}
   <header class="sticky top-0 z-50 bg-black/85 backdrop-blur border-b border-white/10">
     <div class="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between gap-5">
-      <a href="{{ route('landing') }}"><img src="{{ asset('images/logo-black.png') }}" alt="SEWOLAH" class="h-10"></a>
+      <a href="{{ route('home') }}"><img src="{{ asset('images/logo-black.png') }}" alt="SEWOLAH" class="h-10"></a>
       <nav class="hidden md:flex gap-6 text-[13px] font-semibold tracking-wide flex-wrap">
         <a href="#kereta" class="text-white hover:text-brand-red">{{ __('landing.nav.vehicles') }}</a>
         <a href="#cara" class="text-white hover:text-brand-red">{{ __('landing.nav.how') }}</a>

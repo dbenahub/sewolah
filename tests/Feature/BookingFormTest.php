@@ -6,6 +6,7 @@ use App\Mail\CustomerBookingConfirmation;
 use App\Mail\NewLeadNotification;
 use App\Models\Lead;
 use App\Models\Vehicle;
+use App\Support\BookingPolicy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Livewire;
@@ -29,9 +30,9 @@ class BookingFormTest extends TestCase
             ->set('origin', 'Johor Bahru')
             ->set('airport', 'KLIA')
             ->set('purpose', 'Family Trip')
-            ->set('arrivalDate', now()->addDays(3)->toDateString())
+            ->set('arrivalDate', BookingPolicy::earliestPickupDateString())
             ->set('arrivalTime', '10:00')
-            ->set('endDate', now()->addDays(6)->toDateString())
+            ->set('endDate', BookingPolicy::earliestPickupDate()->addDays(3)->toDateString())
             ->call('goNext')
             ->set('vehicleId', (string) $vehicle->id)
             ->set('passengers', 4)
@@ -47,6 +48,7 @@ class BookingFormTest extends TestCase
             ->assertDispatched('lead-submitted');
 
         $this->assertDatabaseHas('leads', [
+            'source' => 'outstation',
             'full_name' => 'Ahmad Test',
             'phone' => '0123456789',
             'email' => 'ahmad@example.com',
@@ -55,6 +57,20 @@ class BookingFormTest extends TestCase
 
         Mail::assertSent(NewLeadNotification::class);
         Mail::assertSent(CustomerBookingConfirmation::class);
+    }
+
+    public function test_outstation_form_rejects_last_minute_arrival(): void
+    {
+        Livewire::test(BookingForm::class)
+            ->set('origin', 'Johor Bahru')
+            ->set('airport', 'KLIA')
+            ->set('purpose', 'Family Trip')
+            ->set('arrivalDate', now()->toDateString())
+            ->set('arrivalTime', '10:00')
+            ->set('endDate', now()->addDays(2)->toDateString())
+            ->call('goNext')
+            ->assertHasErrors(['arrivalDate' => 'after_or_equal'])
+            ->assertSet('step', 1);
     }
 
     public function test_legal_pages_are_available(): void
@@ -71,9 +87,9 @@ class BookingFormTest extends TestCase
             ->set('origin', 'Johor Bahru')
             ->set('airport', 'KLIA')
             ->set('purpose', 'Family Trip')
-            ->set('arrivalDate', now()->addDays(3)->toDateString())
+            ->set('arrivalDate', BookingPolicy::earliestPickupDateString())
             ->set('arrivalTime', '10:00')
-            ->set('endDate', now()->addDays(6)->toDateString())
+            ->set('endDate', BookingPolicy::earliestPickupDate()->addDays(3)->toDateString())
             ->call('goNext')
             ->set('vehicleId', 'other')
             ->set('passengers', 2)
@@ -86,9 +102,9 @@ class BookingFormTest extends TestCase
             ->set('origin', 'Johor Bahru')
             ->set('airport', 'KLIA')
             ->set('purpose', 'Family Trip')
-            ->set('arrivalDate', now()->addDays(3)->toDateString())
+            ->set('arrivalDate', BookingPolicy::earliestPickupDateString())
             ->set('arrivalTime', '10:00')
-            ->set('endDate', now()->addDays(6)->toDateString())
+            ->set('endDate', BookingPolicy::earliestPickupDate()->addDays(3)->toDateString())
             ->call('goNext')
             ->set('vehicleId', 'other')
             ->set('otherVehicleModel', 'Honda CR-V')

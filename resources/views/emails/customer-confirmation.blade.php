@@ -24,9 +24,15 @@
                 {{ $isEn ? 'Thank You, '.$lead->full_name.'!' : 'Terima Kasih, '.$lead->full_name.'!' }}
               </p>
               <p style="margin:0 0 20px;font-size:14px;line-height:1.6;color:#555555;">
-                {{ $isEn
-                    ? 'We have received your booking enquiry. Our team will check vehicle availability and follow up with you shortly. For a faster response, tap the WhatsApp button below to chat with our team directly.'
-                    : 'Borang tempahan anda telah kami terima. Team SEWOLAH akan semak availability kenderaan dan hubungi anda tidak lama lagi. Untuk respons lebih pantas, tekan butang WhatsApp di bawah untuk berbual terus dengan team kami.' }}
+                @if($lead->isGeneral())
+                  {{ $isEn
+                      ? 'We have received your booking application. Our team will review your eligibility and vehicle availability, then contact you for the next stage of screening. Please note that this email is not a booking confirmation — a booking is only valid after screening is complete and written confirmation is issued.'
+                      : 'Permohonan tempahan anda telah kami terima. Team SEWOLAH akan menyemak kelayakan anda serta availability kenderaan, kemudian menghubungi anda untuk proses saringan seterusnya. Sila ambil perhatian bahawa e-mel ini bukan pengesahan tempahan — tempahan hanya sah selepas saringan selesai dan pengesahan bertulis diberikan.' }}
+                @else
+                  {{ $isEn
+                      ? 'We have received your booking enquiry. Our team will check vehicle availability and follow up with you shortly. For a faster response, tap the WhatsApp button below to chat with our team directly.'
+                      : 'Borang tempahan anda telah kami terima. Team SEWOLAH akan semak availability kenderaan dan hubungi anda tidak lama lagi. Untuk respons lebih pantas, tekan butang WhatsApp di bawah untuk berbual terus dengan team kami.' }}
+                @endif
               </p>
 
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:22px;">
@@ -40,20 +46,36 @@
               </table>
 
               <p style="margin:0 0 10px;font-size:13px;font-weight:800;color:#111111;text-transform:uppercase;letter-spacing:0.5px;">
-                {{ $isEn ? 'Your Booking Details' : 'Detail Tempahan Anda' }}
+                {{ $lead->isGeneral() ? ($isEn ? 'Your Application Details' : 'Butiran Permohonan Anda') : ($isEn ? 'Your Booking Details' : 'Detail Tempahan Anda') }}
               </p>
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:13.5px;color:#333333;border-collapse:collapse;">
                 @php
-                    $rows = [
-                        ($isEn ? 'Coming From' : 'Datang Dari') => $lead->origin,
-                        'Airport' => $lead->airport,
-                        ($isEn ? 'Arrival Date/Time' : 'Tarikh/Masa Ketibaan') => trim(optional($lead->arrival_date)->format('d/m/Y').' '.$lead->arrival_time),
-                        ($isEn ? 'Rental End Date' : 'Tarikh Tamat Sewa') => optional($lead->end_date)->format('d/m/Y'),
-                        ($isEn ? 'Purpose' : 'Tujuan') => $lead->purpose,
-                        ($isEn ? 'Preferred Vehicle' : 'Kenderaan Pilihan') => $lead->vehicle_name_snapshot,
-                        ($isEn ? 'Passengers' : 'Jumlah Penumpang') => $lead->passengers,
-                        ($isEn ? 'Main Destination' : 'Lokasi Utama') => $lead->destination,
-                    ];
+                    $time = $lead->arrival_time ? substr((string) $lead->arrival_time, 0, 5) : '';
+                    if ($lead->isGeneral()) {
+                        $rows = [
+                            ($isEn ? 'Reference No.' : 'No. Rujukan') => $lead->referenceNumber(),
+                            ($isEn ? 'Category' : 'Kategori') => $lead->customerCategoryLabel($lead->locale),
+                            ($isEn ? 'Purpose' : 'Tujuan') => $lead->purpose,
+                            ($isEn ? 'Pickup State' : 'Negeri Ambil') => $lead->pickup_state,
+                            ($isEn ? 'Pickup Location' : 'Lokasi Ambil') => $lead->pickup_location,
+                            ($isEn ? 'Pickup Date/Time' : 'Tarikh/Masa Ambil') => trim(optional($lead->arrival_date)->format('d/m/Y').' '.$time),
+                            ($isEn ? 'Return Date' : 'Tarikh Pulang') => optional($lead->end_date)->format('d/m/Y'),
+                            ($isEn ? 'Preferred Vehicle' : 'Kenderaan Pilihan') => $lead->vehicle_name_snapshot,
+                            ($isEn ? 'Passengers' : 'Penumpang') => $lead->passengers,
+                        ];
+                    } else {
+                        $rows = [
+                            ($isEn ? 'Reference No.' : 'No. Rujukan') => $lead->referenceNumber(),
+                            ($isEn ? 'Coming From' : 'Datang Dari') => $lead->origin,
+                            'Airport' => $lead->airport,
+                            ($isEn ? 'Arrival Date/Time' : 'Tarikh/Masa Ketibaan') => trim(optional($lead->arrival_date)->format('d/m/Y').' '.$time),
+                            ($isEn ? 'Rental End Date' : 'Tarikh Tamat Sewa') => optional($lead->end_date)->format('d/m/Y'),
+                            ($isEn ? 'Purpose' : 'Tujuan') => $lead->purpose,
+                            ($isEn ? 'Preferred Vehicle' : 'Kenderaan Pilihan') => $lead->vehicle_name_snapshot,
+                            ($isEn ? 'Passengers' : 'Jumlah Penumpang') => $lead->passengers,
+                            ($isEn ? 'Main Destination' : 'Lokasi Utama') => $lead->destination,
+                        ];
+                    }
                 @endphp
                 @foreach($rows as $label => $value)
                   <tr>
@@ -67,12 +89,15 @@
                 {{ $isEn
                     ? 'All vehicle options are subject to availability and confirmation by the SEWOLAH team.'
                     : 'Semua pilihan kenderaan tertakluk kepada availability dan pengesahan oleh team SEWOLAH.' }}
+                @if($lead->isGeneral())
+                  {{ $isEn ? 'Minimum notice: '.\App\Support\BookingPolicy::minWorkingDays().' working days before pickup.' : 'Notis minimum: '.\App\Support\BookingPolicy::minWorkingDays().' hari bekerja sebelum tarikh ambil.' }}
+                @endif
               </p>
             </td>
           </tr>
           <tr>
             <td style="background-color:#f5f5f5;padding:16px 28px;text-align:center;">
-              <p style="margin:0;font-size:11px;color:#aaaaaa;">© SEWOLAH — Rent With Confidence. Kuala Lumpur &amp; Selangor.</p>
+              <p style="margin:0;font-size:11px;color:#aaaaaa;">© SEWOLAH — Rent With Confidence. {{ $isEn ? 'Peninsular Malaysia' : 'Semenanjung Malaysia' }} · <a href="{{ url('/') }}" style="color:#aaaaaa;">www.sewolah.com</a></p>
             </td>
           </tr>
         </table>

@@ -9,7 +9,7 @@
 </head>
 <body class="bg-[#080808] text-white font-sans antialiased">
   <main class="max-w-3xl mx-auto px-6 py-12 md:py-20">
-    <a href="{{ route('landing') }}" class="text-sm text-white/70 hover:text-white">← Kembali ke SEWOLAH</a>
+    <a href="{{ route('home') }}" class="text-sm text-white/70 hover:text-white">← Kembali ke SEWOLAH</a>
     <h1 class="mt-8 text-3xl md:text-5xl font-extrabold">Polisi Privasi</h1>
     <p class="mt-3 text-sm text-white/55">Kemas kini: 26 September 2026</p>
     <div class="mt-10 space-y-8 text-[15px] leading-7 text-white/75">

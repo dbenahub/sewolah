@@ -9,11 +9,12 @@
 </head>
 <body class="bg-[#080808] text-white font-sans antialiased">
   <main class="max-w-3xl mx-auto px-6 py-12 md:py-20">
-    <a href="{{ route('landing') }}" class="text-sm text-white/70 hover:text-white">← Kembali ke SEWOLAH</a>
+    <a href="{{ route('home') }}" class="text-sm text-white/70 hover:text-white">← Kembali ke SEWOLAH</a>
     <h1 class="mt-8 text-3xl md:text-5xl font-extrabold">Terma dan Syarat</h1>
-    <p class="mt-3 text-sm text-white/55">Kemas kini: 26 September 2026</p>
+    <p class="mt-3 text-sm text-white/55">Kemas kini: 2 Oktober 2026</p>
     <div class="mt-10 space-y-8 text-[15px] leading-7 text-white/75">
       <section><h2 class="text-xl font-bold text-white">Permintaan semakan</h2><p>Penghantaran borang ialah permintaan untuk semakan, bukan pengesahan tempahan. Ketersediaan, model, harga, deposit, lokasi serahan dan syarat akhir hanya sah selepas disahkan oleh pihak SEWOLAH.</p></section>
+      <section><h2 class="text-xl font-bold text-white">Notis minimum &amp; saringan</h2><p>Permohonan tempahan mesti dibuat sekurang-kurangnya {{ \App\Support\BookingPolicy::minWorkingDays() }} hari bekerja (Isnin hingga Jumaat) sebelum tarikh ambil kenderaan. Tempahan last minute tidak diterima. Setiap permohonan tertakluk kepada proses saringan kelayakan dan semakan dokumen, dan SEWOLAH berhak menolak mana-mana permohonan tanpa memberikan sebab.</p></section>
       <section><h2 class="text-xl font-bold text-white">Kelayakan penyewa</h2><p>Penyewa perlu memberikan maklumat yang tepat serta memenuhi keperluan lesen, umur, identiti dan dokumen yang ditetapkan untuk kenderaan berkenaan.</p></section>
       <section><h2 class="text-xl font-bold text-white">Bayaran dan deposit</h2><p>Kadar sewa, deposit keselamatan, caj tambahan, kaedah bayaran dan polisi pembatalan akan dinyatakan dalam sebut harga atau pengesahan tempahan. Jangan membuat bayaran kepada akaun yang tidak disahkan oleh SEWOLAH.</p></section>
       <section><h2 class="text-xl font-bold text-white">Penggunaan kenderaan</h2><p>Pelanggan wajib mematuhi undang-undang jalan raya dan syarat penggunaan yang dipersetujui. Saman, tol, kerosakan, kehilangan, bahan api, had perjalanan dan lebihan perlindungan boleh dikenakan mengikut perjanjian sewaan.</p></section>

@@ -12,6 +12,11 @@
         <option value="{{ $s }}" class="bg-[#0A0A0A] text-white">{{ ucfirst(str_replace('_',' ',$s)) }}</option>
       @endforeach
     </select>
+    <select wire:model.live="sourceFilter" class="px-3.5 py-2.5 rounded-lg border border-white/15 bg-[#0A0A0A] text-white text-sm">
+      <option value="" class="bg-[#0A0A0A] text-white">Semua Sumber</option>
+      <option value="general" class="bg-[#0A0A0A] text-white">Borang Utama (/form)</option>
+      <option value="outstation" class="bg-[#0A0A0A] text-white">Outstation</option>
+    </select>
   </div>
 
   @if($leads->isEmpty())
@@ -21,10 +26,12 @@
       <table class="w-full border-collapse text-[13px]">
         <thead>
           <tr class="text-left text-white/50">
+            <th class="p-3.5 font-bold">Rujukan</th>
             <th class="p-3.5 font-bold">Nama</th>
             <th class="p-3.5 font-bold">Telefon</th>
             <th class="p-3.5 font-bold">Kenderaan</th>
-            <th class="p-3.5 font-bold">Tarikh Ketibaan</th>
+            <th class="p-3.5 font-bold">Sumber / Kategori</th>
+            <th class="p-3.5 font-bold">Tarikh Ambil</th>
             <th class="p-3.5 font-bold">Status</th>
             <th class="p-3.5"></th>
           </tr>
@@ -32,9 +39,14 @@
         <tbody>
           @foreach($leads as $lead)
             <tr class="border-t border-white/6">
+              <td class="p-3.5 whitespace-nowrap text-white/60">{{ $lead->referenceNumber() }}</td>
               <td class="p-3.5">{{ $lead->full_name }}</td>
               <td class="p-3.5">{{ $lead->phone }}</td>
               <td class="p-3.5">{{ $lead->vehicle_name_snapshot }}</td>
+              <td class="p-3.5">
+                <span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded {{ $lead->isGeneral() ? 'bg-brand-red/20 text-red-300' : 'bg-white/10 text-white/70' }}">{{ $lead->isGeneral() ? 'UTAMA' : 'OUTSTATION' }}</span>
+                @if($lead->customer_category)<span class="block mt-1 text-xs text-white/55">{{ $lead->customerCategoryLabel('ms') }}</span>@endif
+              </td>
               <td class="p-3.5">{{ optional($lead->arrival_date)->format('d/m/Y') }}</td>
               <td class="p-3.5">
                 <select wire:change="updateStatus({{ $lead->id }}, $event.target.value)" class="bg-[#0A0A0A] text-white border border-white/15 rounded px-2 py-1 text-xs">
@@ -61,15 +73,31 @@
         <button wire:click="closeLead" class="bg-transparent border-none text-white/50 text-[13px]">Tutup ✕</button>
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5 text-[13.5px]">
-        @foreach([
-          'Nama' => $selectedLead->full_name, 'Telefon' => $selectedLead->phone, 'Email' => $selectedLead->email ?: '-',
-          'Datang Dari' => $selectedLead->origin, 'Airport' => $selectedLead->airport,
-          'Tarikh Ketibaan' => optional($selectedLead->arrival_date)->format('d/m/Y').' '.$selectedLead->arrival_time,
-          'Tarikh Tamat Sewa' => optional($selectedLead->end_date)->format('d/m/Y'),
-          'Tujuan' => $selectedLead->purpose, 'Kenderaan' => $selectedLead->vehicle_name_snapshot,
-          'Penumpang' => $selectedLead->passengers, 'Luggage' => $selectedLead->luggage,
-          'Destinasi' => $selectedLead->destination, 'Catatan' => $selectedLead->notes ?: '-',
-        ] as $label => $value)
+        @php
+          $selTime = $selectedLead->arrival_time ? substr((string) $selectedLead->arrival_time, 0, 5) : '';
+          $detailRows = $selectedLead->isGeneral() ? [
+            'No. Rujukan' => $selectedLead->referenceNumber(), 'Sumber' => $selectedLead->sourceLabel(),
+            'Kategori' => $selectedLead->customerCategoryLabel('ms'), 'Nama' => $selectedLead->full_name,
+            'Syarikat' => $selectedLead->company_name ?: '-', 'Telefon' => $selectedLead->phone, 'Email' => $selectedLead->email ?: '-',
+            'Lesen' => $selectedLead->driver_license ? trans('form.license_options.'.$selectedLead->driver_license, [], 'ms') : '-',
+            'Tujuan' => $selectedLead->purpose, 'Negeri Ambil' => $selectedLead->pickup_state,
+            'Lokasi Ambil' => $selectedLead->pickup_location, 'Lokasi Pulang' => $selectedLead->return_location ?: 'Sama',
+            'Tarikh/Masa Ambil' => optional($selectedLead->arrival_date)->format('d/m/Y').' '.$selTime,
+            'Tarikh Pulang' => optional($selectedLead->end_date)->format('d/m/Y'),
+            'Kenderaan' => $selectedLead->vehicle_name_snapshot, 'Penumpang' => $selectedLead->passengers,
+            'Catatan' => $selectedLead->notes ?: '-',
+          ] : [
+            'No. Rujukan' => $selectedLead->referenceNumber(), 'Sumber' => $selectedLead->sourceLabel(),
+            'Nama' => $selectedLead->full_name, 'Telefon' => $selectedLead->phone, 'Email' => $selectedLead->email ?: '-',
+            'Datang Dari' => $selectedLead->origin, 'Airport' => $selectedLead->airport,
+            'Tarikh Ketibaan' => optional($selectedLead->arrival_date)->format('d/m/Y').' '.$selTime,
+            'Tarikh Tamat Sewa' => optional($selectedLead->end_date)->format('d/m/Y'),
+            'Tujuan' => $selectedLead->purpose, 'Kenderaan' => $selectedLead->vehicle_name_snapshot,
+            'Penumpang' => $selectedLead->passengers, 'Luggage' => $selectedLead->luggage,
+            'Destinasi' => $selectedLead->destination, 'Catatan' => $selectedLead->notes ?: '-',
+          ];
+        @endphp
+        @foreach($detailRows as $label => $value)
           <div>
             <p class="m-0 mb-0.5 text-[11.5px] font-bold tracking-wide text-white/45">{{ $label }}</p>
             <p class="m-0">{{ $value }}</p>

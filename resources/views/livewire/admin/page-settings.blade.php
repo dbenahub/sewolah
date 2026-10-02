@@ -11,7 +11,11 @@
       @error('adminEmail') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
     </label>
     <button type="submit" class="justify-self-start bg-brand-red text-white font-bold text-[13.5px] px-5.5 py-3 rounded-lg">SIMPAN</button>
-    @if($saved)<p class="m-0 text-[12.5px] text-green-400">Disimpan &amp; digunakan pada Landing Page.</p>@endif
-    <a href="{{ route('landing') }}" target="_blank" class="justify-self-start text-[13px] text-brand-red font-bold">Buka Landing Page →</a>
+    @if($saved)<p class="m-0 text-[12.5px] text-green-400">Disimpan &amp; digunakan pada semua halaman dan borang.</p>@endif
+    <div class="flex flex-wrap gap-4">
+      <a href="{{ route('home') }}" target="_blank" class="text-[13px] text-brand-red font-bold">Buka Laman Utama →</a>
+      <a href="{{ route('booking.form') }}" target="_blank" class="text-[13px] text-brand-red font-bold">Buka Borang (/form) →</a>
+      <a href="{{ route('landing') }}" target="_blank" class="text-[13px] text-brand-red font-bold">Buka Outstation →</a>
+    </div>
   </form>
 </div>

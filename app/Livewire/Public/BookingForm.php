@@ -7,6 +7,7 @@ use App\Mail\NewLeadNotification;
 use App\Models\Lead;
 use App\Models\PageSetting;
 use App\Models\Vehicle;
+use App\Support\BookingPolicy;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -62,7 +63,7 @@ class BookingForm extends Component
                 'origin' => ['required', 'string', 'max:150'],
                 'airport' => ['required', 'string'],
                 'purpose' => ['required', 'string'],
-                'arrivalDate' => ['required', 'date'],
+                'arrivalDate' => ['required', 'date', 'after_or_equal:'.BookingPolicy::earliestPickupDateString()],
                 'arrivalTime' => ['required'],
                 'endDate' => ['required', 'date', 'after_or_equal:arrivalDate'],
             ],
@@ -92,9 +93,16 @@ class BookingForm extends Component
         }
     }
 
+    protected function stepMessages(): array
+    {
+        return [
+            'arrivalDate.after_or_equal' => __('form.errors.min_date', ['date' => BookingPolicy::earliestPickupDateLabel()]),
+        ];
+    }
+
     public function goNext()
     {
-        $this->validate($this->rulesForStep($this->step));
+        $this->validate($this->rulesForStep($this->step), $this->stepMessages());
         $this->step = min(3, $this->step + 1);
     }
 
@@ -111,12 +119,20 @@ class BookingForm extends Component
             return;
         }
 
-        $this->validate($this->rulesForStep(3));
+        foreach ([1, 2, 3] as $step) {
+            try {
+                $this->validate($this->rulesForStep($step), $this->stepMessages());
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                $this->step = $step;
+                throw $e;
+            }
+        }
 
         $vehicle = ($this->vehicleId && ! $this->isOtherVehicle()) ? Vehicle::find($this->vehicleId) : null;
         $utm = session('utm', []);
 
         $lead = Lead::create([
+            'source' => 'outstation',
             'full_name' => $this->fullName,
             'phone' => $this->phone,
             'email' => $this->email,
@@ -198,6 +214,10 @@ class BookingForm extends Component
 
     public function render()
     {
-        return view('livewire.public.booking-form');
+        return view('livewire.public.booking-form', [
+            'earliestDate' => BookingPolicy::earliestPickupDateString(),
+            'earliestLabel' => BookingPolicy::earliestPickupDateLabel(),
+            'minDays' => BookingPolicy::minWorkingDays(),
+        ]);
     }
 }

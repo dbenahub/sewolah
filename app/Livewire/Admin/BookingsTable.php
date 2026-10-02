@@ -12,11 +12,22 @@ class BookingsTable extends Component
 
     public string $search = '';
     public string $statusFilter = '';
+    public string $sourceFilter = '';
     public ?int $selectedLeadId = null;
 
-    protected $queryString = ['search', 'statusFilter'];
+    protected $queryString = ['search', 'statusFilter', 'sourceFilter'];
 
     public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingSourceFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingStatusFilter()
     {
         $this->resetPage();
     }
@@ -42,11 +53,18 @@ class BookingsTable extends Component
 
         return response()->streamDownload(function () use ($leads) {
             $out = fopen('php://output', 'w');
-            fputcsv($out, ['Nama', 'Telefon', 'Email', 'Kenderaan', 'Tarikh Ketibaan', 'Status', 'Tarikh Submit']);
+            fputcsv($out, [
+                'No. Rujukan', 'Sumber', 'Kategori', 'Nama', 'Syarikat', 'Telefon', 'Email', 'Tujuan',
+                'Negeri / Datang Dari', 'Lokasi Ambil', 'Kenderaan', 'Tarikh Ambil/Ketibaan', 'Tarikh Pulang',
+                'Penumpang', 'Status', 'Tarikh Submit',
+            ]);
             foreach ($leads as $lead) {
                 fputcsv($out, [
-                    $lead->full_name, $lead->phone, $lead->email, $lead->vehicle_name_snapshot,
-                    $lead->arrival_date, $lead->status, $lead->submitted_at,
+                    $lead->referenceNumber(), $lead->sourceLabel(), $lead->customerCategoryLabel('ms'),
+                    $lead->full_name, $lead->company_name, $lead->phone, $lead->email, $lead->purpose,
+                    $lead->pickup_state ?: $lead->origin, $lead->pickup_location ?: $lead->airport,
+                    $lead->vehicle_name_snapshot, optional($lead->arrival_date)->format('Y-m-d'),
+                    optional($lead->end_date)->format('Y-m-d'), $lead->passengers, $lead->status, $lead->submitted_at,
                 ]);
             }
             fclose($out);
@@ -62,6 +80,7 @@ class BookingsTable extends Component
                 ->orWhere('email', 'like', "%{$this->search}%")
             ))
             ->when($this->statusFilter, fn ($q) => $q->where('status', $this->statusFilter))
+            ->when($this->sourceFilter, fn ($q) => $q->where('source', $this->sourceFilter))
             ->orderByDesc('submitted_at')
             ->paginate(15);
 

@@ -23,7 +23,7 @@
           </tr>
           <tr>
             <td style="padding:28px;">
-              <p style="margin:0 0 4px;font-size:12px;font-weight:800;color:#E31E24;letter-spacing:0.5px;text-transform:uppercase;">Tempahan Baharu</p>
+              <p style="margin:0 0 4px;font-size:12px;font-weight:800;color:#E31E24;letter-spacing:0.5px;text-transform:uppercase;">{{ $lead->isGeneral() ? 'Permohonan Baharu · '.$lead->customerCategoryLabel('ms') : 'Tempahan Baharu · Outstation' }}</p>
               <p style="margin:0 0 20px;font-size:20px;font-weight:800;color:#111111;">{{ $lead->full_name }}</p>
 
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:22px;">
@@ -38,27 +38,52 @@
 
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:13.5px;color:#333333;border-collapse:collapse;">
                 @php
-                    $rows = [
-                        'Nama' => $lead->full_name,
-                        'Telefon' => $lead->phone,
-                        'Email' => $lead->email ?: '-',
-                        'Datang Dari' => $lead->origin,
-                        'Airport' => $lead->airport,
-                        'Tarikh/Masa Ketibaan' => trim(optional($lead->arrival_date)->format('d/m/Y').' '.$lead->arrival_time),
-                        'Tarikh Tamat Sewa' => optional($lead->end_date)->format('d/m/Y'),
-                        'Tujuan' => $lead->purpose,
-                        'Kenderaan' => $lead->vehicle_name_snapshot,
-                        'Model Lain' => $lead->other_vehicle_model ?: '-',
-                        'Penumpang' => $lead->passengers,
-                        'Luggage' => $lead->luggage,
-                        'Destinasi' => $lead->destination,
-                        'Catatan' => $lead->notes ?: '-',
-                    ];
+                    $time = $lead->arrival_time ? substr((string) $lead->arrival_time, 0, 5) : '';
+                    if ($lead->isGeneral()) {
+                        $rows = [
+                            'No. Rujukan' => $lead->referenceNumber(),
+                            'Sumber' => $lead->sourceLabel(),
+                            'Kategori' => $lead->customerCategoryLabel('ms'),
+                            'Nama' => $lead->full_name,
+                            'Syarikat' => $lead->company_name ?: '-',
+                            'Telefon' => $lead->phone,
+                            'Email' => $lead->email ?: '-',
+                            'Lesen' => $lead->driver_license ? trans('form.license_options.'.$lead->driver_license, [], 'ms') : '-',
+                            'Tujuan' => $lead->purpose,
+                            'Negeri Ambil' => $lead->pickup_state,
+                            'Lokasi Ambil' => $lead->pickup_location,
+                            'Lokasi Pulang' => $lead->return_location ?: 'Sama seperti lokasi ambil',
+                            'Tarikh/Masa Ambil' => trim(optional($lead->arrival_date)->format('d/m/Y').' '.$time),
+                            'Tarikh Pulang' => optional($lead->end_date)->format('d/m/Y'),
+                            'Kenderaan' => $lead->vehicle_name_snapshot,
+                            'Penumpang' => $lead->passengers,
+                            'Catatan' => $lead->notes ?: '-',
+                        ];
+                    } else {
+                        $rows = [
+                            'No. Rujukan' => $lead->referenceNumber(),
+                            'Sumber' => $lead->sourceLabel(),
+                            'Nama' => $lead->full_name,
+                            'Telefon' => $lead->phone,
+                            'Email' => $lead->email ?: '-',
+                            'Datang Dari' => $lead->origin,
+                            'Airport' => $lead->airport,
+                            'Tarikh/Masa Ketibaan' => trim(optional($lead->arrival_date)->format('d/m/Y').' '.$time),
+                            'Tarikh Tamat Sewa' => optional($lead->end_date)->format('d/m/Y'),
+                            'Tujuan' => $lead->purpose,
+                            'Kenderaan' => $lead->vehicle_name_snapshot,
+                            'Model Lain' => $lead->other_vehicle_model ?: '-',
+                            'Penumpang' => $lead->passengers,
+                            'Luggage' => $lead->luggage,
+                            'Destinasi' => $lead->destination,
+                            'Catatan' => $lead->notes ?: '-',
+                        ];
+                    }
                 @endphp
                 @foreach($rows as $label => $value)
                   <tr>
                     <td style="padding:6px 0;border-bottom:1px solid #f0f0f0;color:#888888;width:38%;vertical-align:top;">{{ $label }}</td>
-                    <td style="padding:6px 0;border-bottom:1px solid #f0f0f0;font-weight:600;">{{ $value }}</td>
+                    <td style="padding:6px 0;border-bottom:1px solid #f0f0f0;font-weight:600;">{!! nl2br(e($value)) !!}</td>
                   </tr>
                 @endforeach
               </table>

@@ -15,7 +15,11 @@ class NewLeadNotification extends Mailable
 
     public function build()
     {
-        return $this->subject('SEWOLAH — Tempahan Baharu: '.$this->lead->full_name)
+        $subject = $this->lead->isGeneral()
+            ? 'SEWOLAH — Permohonan Baharu ('.$this->lead->customerCategoryLabel('ms').'): '.$this->lead->full_name.' ['.$this->lead->referenceNumber().']'
+            : 'SEWOLAH — Tempahan Baharu (Outstation): '.$this->lead->full_name.' ['.$this->lead->referenceNumber().']';
+
+        return $this->subject($subject)
             ->view('emails.new-lead');
     }
 }

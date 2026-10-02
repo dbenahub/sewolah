@@ -50,7 +50,7 @@
         </div>
         <div class="grid sm:grid-cols-3 gap-4">
           <label class="grid gap-1.5 text-[13px] font-semibold">{{ __('landing.booking.fields.arrival_date') }}
-            <input type="date" wire:model="arrivalDate" class="w-full box-border px-3.5 py-3 rounded-lg border border-black/15 text-sm">
+            <input type="date" wire:model="arrivalDate" min="{{ $earliestDate }}" class="w-full box-border px-3.5 py-3 rounded-lg border border-black/15 text-sm">
             @error('arrivalDate') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
           </label>
           <label class="grid gap-1.5 text-[13px] font-semibold">{{ __('landing.booking.fields.arrival_time') }}
@@ -58,10 +58,11 @@
             @error('arrivalTime') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
           </label>
           <label class="grid gap-1.5 text-[13px] font-semibold">{{ __('landing.booking.fields.end_date') }}
-            <input type="date" wire:model="endDate" class="w-full box-border px-3.5 py-3 rounded-lg border border-black/15 text-sm">
+            <input type="date" wire:model="endDate" min="{{ $earliestDate }}" class="w-full box-border px-3.5 py-3 rounded-lg border border-black/15 text-sm">
             @error('endDate') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
           </label>
         </div>
+        <p class="m-0 -mt-1 text-xs text-black/55">{{ __('form.fields.earliest_hint', ['date' => $earliestLabel, 'days' => $minDays]) }}</p>
         <button type="button" wire:click="goNext" class="bg-black text-white font-bold text-[13.5px] px-5 py-3.5 rounded-lg">{{ __('landing.booking.next') }}</button>
       </div>
     @endif

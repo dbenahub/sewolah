@@ -10,7 +10,7 @@ class LanguageSwitcher extends Component
     {
         if (in_array($locale, ['ms', 'en'])) {
             session(['locale' => $locale]);
-            $this->redirect(request()->header('Referer') ?? route('landing'), navigate: false);
+            $this->redirect(request()->header('Referer') ?? route('home'), navigate: false);
         }
     }
 
