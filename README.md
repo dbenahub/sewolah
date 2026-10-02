@@ -13,26 +13,22 @@ Website dan admin panel SEWOLAH (sewolah.com) — **Laravel 11, PHP 8.4, MySQL, 
 
 Gaya laman utama & borang: `public/css/sewolah.css` (CSS biasa, tiada build). Teks BM/EN: `lang/ms/*.php`, `lang/en/*.php`. Polisi notis minimum: `config/sewolah.php` (`SEWOLAH_MIN_WORKING_DAYS`, default 3).
 
-## Susunan folder
+## Susunan folder (di komputer)
 
 ```
 Web Apps - SEWOLAH/
-├── app/ bootstrap/ config/ database/      ← kod website (JANGAN pindah)
-├── lang/ public/ resources/ routes/
-├── storage/ tests/
-├── artisan, composer.json, package.json,  ← fail konfigurasi Laravel (JANGAN pindah)
-│   vite.config.js, tailwind.config.js, ...
-├── PUSH_KE_GITHUB.bat                     ← klik dua kali untuk hantar perubahan ke GitHub
-├── README.md                              ← fail ini
-└── _PROJEK_SEWOLAH/                       ← bahan projek (TIDAK digunakan oleh website)
-    ├── 01_Dokumen_Perancangan/            ← PRD, build prompt, dokumen asal
-    ├── 02_Prototaip_Reka_Bentuk/          ← prototaip .dc.html + support.js + assets/
-    ├── 03_Bahan_Jenama_Asal/              ← logo, cover Facebook, gambar kereta & foto asal
-    ├── 04_Preview_Website/                ← tangkapan skrin laman baru
-    └── 05_Arkib/                          ← fail lama / sandaran
+├── 00 - PANDUAN (buka saya).html   ← panduan & pautan penting
+├── 1 - HANTAR KE GITHUB.bat        ← hantar perubahan kod ke GitHub
+├── 01_Sistem_Laravel/              ← REPO GIT ini (kod website) — deploy oleh Forge
+├── 02_Dokumen/                     ← PRD, build prompt, dokumen asal
+├── 03_Rekaan_Asal_HTML/            ← prototaip .dc.html + support.js + assets/
+├── 04_Bahan_Jenama/                ← logo, cover Facebook, gambar kereta & foto asal
+├── 05_Preview_Website/             ← tangkapan skrin laman
+└── 06_Arkib/                       ← fail lama / log
 ```
 
-Semua fail kod website mesti kekal di tempat asal — Forge deploy terus dari struktur ini.
+Hanya `01_Sistem_Laravel/` berada dalam repo GitHub. Folder lain ialah bahan rujukan di komputer sahaja.
+Jangan ubah susunan folder di dalam `01_Sistem_Laravel/` — Forge deploy terus dari struktur ini.
 
 ## Setup local
 
