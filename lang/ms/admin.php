@@ -13,7 +13,7 @@ return [
         'bookings' => 'Tempahan & Pelanggan',
         'pixels' => 'Tetapan Pixel',
         'vehicles' => 'Kenderaan',
-        'page_settings' => 'Edit Landing Page',
+        'page_settings' => 'Tetapan Laman',
         'change_password' => 'Tukar Kata Laluan',
         'logout' => 'Log Keluar',
     ],

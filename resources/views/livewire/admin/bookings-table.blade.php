@@ -1,81 +1,109 @@
-<div class="grid gap-6">
-  <div class="flex flex-wrap gap-3 justify-between items-center">
-    <h1 class="m-0 text-2xl font-extrabold">Tempahan &amp; Pelanggan</h1>
-    <button wire:click="exportCsv" class="bg-white/10 text-white text-xs font-bold px-3.5 py-2 rounded-lg">Export CSV</button>
+@php
+  $statusLabels = \App\Livewire\Admin\Dashboard::STATUS_LABELS;
+  $states = trans('form.states', [], 'ms');
+  $catOptions = collect(\App\Models\Lead::CUSTOMER_CATEGORIES)->mapWithKeys(fn ($c) => [$c => trans('form.categories.'.$c.'.title', [], 'ms')])->all();
+  $licOptions = ['malaysia' => trans('form.license_options.malaysia', [], 'ms'), 'international' => trans('form.license_options.international', [], 'ms')];
+@endphp
+<div class="adm-grid" style="gap:20px">
+  <div class="adm-head">
+    <div>
+      <h1>Tempahan &amp; Pelanggan</h1>
+      <p>Urus semua permohonan daripada borang utama dan halaman outstation.</p>
+    </div>
+    <div class="adm-head__actions">
+      <button type="button" wire:click="exportCsv" class="adm-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 19h14"/></svg>
+        Export CSV
+      </button>
+    </div>
   </div>
 
   @if($flash)
-    <div class="flex items-center justify-between gap-3 bg-green-500/10 border border-green-500/30 text-green-300 text-[13px] font-semibold px-4 py-3 rounded-xl">
+    <div class="adm-alert adm-alert--success" role="status">
       <span>{{ $flash }}</span>
-      <button type="button" wire:click="dismissFlash" class="text-green-300/70 hover:text-green-200">✕</button>
+      <button type="button" wire:click="dismissFlash" aria-label="Tutup">✕</button>
     </div>
   @endif
 
-  <div class="flex flex-wrap gap-3">
-    <input type="text" wire:model.live.debounce.400ms="search" placeholder="Cari nama / telefon..." class="px-3.5 py-2.5 rounded-lg border border-white/15 bg-[#0A0A0A] text-white text-sm flex-1 min-w-[200px]">
-    <select wire:model.live="statusFilter" class="px-3.5 py-2.5 rounded-lg border border-white/15 bg-[#0A0A0A] text-white text-sm">
-      <option value="" class="bg-[#0A0A0A] text-white">Semua Status</option>
-      @foreach(['baru','dihubungi','quotation_dihantar','disahkan','batal'] as $s)
-        <option value="{{ $s }}" class="bg-[#0A0A0A] text-white">{{ ucfirst(str_replace('_',' ',$s)) }}</option>
-      @endforeach
-    </select>
-    <select wire:model.live="sourceFilter" class="px-3.5 py-2.5 rounded-lg border border-white/15 bg-[#0A0A0A] text-white text-sm">
-      <option value="" class="bg-[#0A0A0A] text-white">Semua Sumber</option>
-      <option value="general" class="bg-[#0A0A0A] text-white">Borang Utama (/form)</option>
-      <option value="outstation" class="bg-[#0A0A0A] text-white">Outstation</option>
-    </select>
-  </div>
+  <section class="adm-card adm-card--flush">
+    <div class="adm-toolbar" style="padding:16px">
+      <label class="adm-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" wire:model.live.debounce.400ms="search" placeholder="Cari nama, telefon atau e-mel..." class="adm-input" aria-label="Cari">
+      </label>
+      <select wire:model.live="statusFilter" class="adm-select" style="width:auto;min-width:170px" aria-label="Status">
+        <option value="">Semua status</option>
+        @foreach($statusLabels as $key => $label)
+          <option value="{{ $key }}">{{ $label }}</option>
+        @endforeach
+      </select>
+      <select wire:model.live="sourceFilter" class="adm-select" style="width:auto;min-width:170px" aria-label="Sumber">
+        <option value="">Semua sumber</option>
+        <option value="general">Borang utama (/form)</option>
+        <option value="outstation">Outstation</option>
+      </select>
+    </div>
 
-  @if($leads->isEmpty())
-    <p class="m-0 text-[13px] text-white/45">Tiada tempahan dijumpai.</p>
-  @else
-    <div class="overflow-x-auto bg-[#141414] border border-white/8 rounded-2xl">
-      <table class="w-full border-collapse text-[13px]">
-        <thead>
-          <tr class="text-left text-white/50">
-            <th class="p-3.5 font-bold">Rujukan</th>
-            <th class="p-3.5 font-bold">Nama</th>
-            <th class="p-3.5 font-bold">Telefon</th>
-            <th class="p-3.5 font-bold">Kenderaan</th>
-            <th class="p-3.5 font-bold">Sumber / Kategori</th>
-            <th class="p-3.5 font-bold">Tarikh Ambil</th>
-            <th class="p-3.5 font-bold">Status</th>
-            <th class="p-3.5"></th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach($leads as $lead)
-            <tr class="border-t border-white/6">
-              <td class="p-3.5 whitespace-nowrap text-white/60">{{ $lead->referenceNumber() }}</td>
-              <td class="p-3.5"><button type="button" wire:click="viewLead({{ $lead->id }})" class="text-left font-semibold hover:text-brand-red">{{ $lead->full_name }}</button></td>
-              <td class="p-3.5">{{ $lead->phone }}</td>
-              <td class="p-3.5">{{ $lead->vehicle_name_snapshot }}</td>
-              <td class="p-3.5">
-                <span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded {{ $lead->isGeneral() ? 'bg-brand-red/20 text-red-300' : 'bg-white/10 text-white/70' }}">{{ $lead->isGeneral() ? 'UTAMA' : 'OUTSTATION' }}</span>
-                @if($lead->customer_category)<span class="block mt-1 text-xs text-white/55">{{ $lead->customerCategoryLabel('ms') }}</span>@endif
-              </td>
-              <td class="p-3.5">{{ optional($lead->arrival_date)->format('d/m/Y') }}</td>
-              <td class="p-3.5">
-                <select wire:change="updateStatus({{ $lead->id }}, $event.target.value)" class="bg-[#0A0A0A] text-white border border-white/15 rounded px-2 py-1 text-xs">
-                  @foreach(['baru','dihubungi','quotation_dihantar','disahkan','batal'] as $s)
-                    <option value="{{ $s }}" class="bg-[#0A0A0A] text-white" @selected($lead->status === $s)>{{ ucfirst(str_replace('_',' ',$s)) }}</option>
-                  @endforeach
-                </select>
-              </td>
-              <td class="p-3.5">
-                <div class="flex gap-1.5 justify-end whitespace-nowrap">
-                  <button type="button" wire:click="viewLead({{ $lead->id }})" class="bg-transparent border border-white/15 hover:border-white/40 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">Lihat</button>
-                  <button type="button" wire:click="editLead({{ $lead->id }})" class="bg-white/10 hover:bg-white/20 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">Edit</button>
-                  <button type="button" wire:click="deleteLead({{ $lead->id }})" wire:confirm="Padam tempahan {{ $lead->referenceNumber() }} ({{ $lead->full_name }})? Tindakan ini tidak boleh dibatalkan." class="bg-brand-red/15 hover:bg-brand-red/30 text-red-300 text-xs font-semibold px-3 py-1.5 rounded-lg">Padam</button>
-                </div>
-              </td>
+    @if($leads->isEmpty())
+      <p class="adm-empty">Tiada tempahan dijumpai.</p>
+    @else
+      <div class="adm-table-wrap">
+        <table class="adm-table">
+          <thead>
+            <tr>
+              <th>Rujukan</th>
+              <th>Pelanggan</th>
+              <th>Kenderaan</th>
+              <th>Sumber</th>
+              <th>Tarikh ambil</th>
+              <th>Status</th>
+              <th style="text-align:right">Tindakan</th>
             </tr>
-          @endforeach
-        </tbody>
-      </table>
-    </div>
-    <div>{{ $leads->links() }}</div>
-  @endif
+          </thead>
+          <tbody>
+            @foreach($leads as $lead)
+              <tr wire:key="lead-row-{{ $lead->id }}">
+                <td class="adm-ref">{{ $lead->referenceNumber() }}</td>
+                <td>
+                  <button type="button" wire:click="viewLead({{ $lead->id }})" class="adm-name">{{ $lead->full_name }}</button>
+                  <span class="adm-sub">{{ $lead->phone }}</span>
+                </td>
+                <td>{{ $lead->vehicle_name_snapshot ?: '-' }}</td>
+                <td>
+                  <span class="adm-tag adm-tag--{{ $lead->isGeneral() ? 'general' : 'outstation' }}">{{ $lead->isGeneral() ? 'UTAMA' : 'OUTSTATION' }}</span>
+                  @if($lead->customer_category)<span class="adm-sub">{{ $lead->customerCategoryLabel('ms') }}</span>@endif
+                </td>
+                <td class="num">{{ optional($lead->arrival_date)->format('d/m/Y') ?: '-' }}</td>
+                <td>
+                  <select wire:change="updateStatus({{ $lead->id }}, $event.target.value)" class="adm-select adm-status-select" aria-label="Status {{ $lead->referenceNumber() }}">
+                    @foreach($statusLabels as $key => $label)
+                      <option value="{{ $key }}" @selected($lead->status === $key)>{{ $label }}</option>
+                    @endforeach
+                  </select>
+                </td>
+                <td>
+                  <div class="adm-actions">
+                    <button type="button" wire:click="viewLead({{ $lead->id }})" class="adm-btn adm-btn--sm">Lihat</button>
+                    <button type="button" wire:click="editLead({{ $lead->id }})" class="adm-btn adm-btn--sm adm-btn--soft">Edit</button>
+                    <button type="button" wire:click="deleteLead({{ $lead->id }})" wire:confirm="Padam tempahan {{ $lead->referenceNumber() }} ({{ $lead->full_name }})? Tindakan ini tidak boleh dibatalkan." class="adm-btn adm-btn--sm adm-btn--danger">Padam</button>
+                  </div>
+                </td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+      @if($leads->hasPages())
+        <div class="adm-pagination" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <span class="adm-hint">Halaman {{ $leads->currentPage() }} dari {{ $leads->lastPage() }} · {{ $leads->total() }} tempahan</span>
+          <div style="display:flex;gap:8px">
+            <button type="button" class="adm-btn adm-btn--sm" wire:click="previousPage" @disabled($leads->onFirstPage())>← Sebelum</button>
+            <button type="button" class="adm-btn adm-btn--sm" wire:click="nextPage" @disabled(! $leads->hasMorePages())>Seterusnya →</button>
+          </div>
+        </div>
+      @endif
+    @endif
+  </section>
 
   @if($selectedLead)
     @php
@@ -84,190 +112,150 @@
       if (str_starts_with($waCustomer, '0')) { $waCustomer = '6'.$waCustomer; }
       $selTime = $selectedLead->arrival_time ? substr((string) $selectedLead->arrival_time, 0, 5) : '';
       $detailRows = $isGen ? [
-        'No. Rujukan' => $selectedLead->referenceNumber(), 'Sumber' => $selectedLead->sourceLabel(),
-        'Kategori' => $selectedLead->customerCategoryLabel('ms'), 'Status' => ucfirst(str_replace('_',' ',$selectedLead->status)),
-        'Nama' => $selectedLead->full_name, 'Syarikat' => $selectedLead->company_name ?: '-',
-        'Telefon' => $selectedLead->phone, 'Email' => $selectedLead->email ?: '-',
-        'Lesen' => $selectedLead->driver_license ? trans('form.license_options.'.$selectedLead->driver_license, [], 'ms') : '-',
-        'Tujuan' => $selectedLead->purpose, 'Negeri Ambil' => $selectedLead->pickup_state,
-        'Lokasi Ambil' => $selectedLead->pickup_location, 'Lokasi Pulang' => $selectedLead->return_location ?: 'Sama seperti lokasi ambil',
-        'Tarikh/Masa Ambil' => trim(optional($selectedLead->arrival_date)->format('d/m/Y').' '.$selTime),
-        'Tarikh Pulang' => optional($selectedLead->end_date)->format('d/m/Y'),
+        'Kategori' => $selectedLead->customerCategoryLabel('ms'),
+        'Telefon' => $selectedLead->phone, 'E-mel' => $selectedLead->email,
+        'Syarikat' => $selectedLead->company_name,
+        'Lesen' => $selectedLead->driver_license ? ($licOptions[$selectedLead->driver_license] ?? $selectedLead->driver_license) : null,
+        'Tujuan' => $selectedLead->purpose, 'Negeri ambil' => $selectedLead->pickup_state,
+        'Lokasi ambil' => $selectedLead->pickup_location, 'Lokasi pulang' => $selectedLead->return_location ?: 'Sama seperti lokasi ambil',
+        'Tarikh / masa ambil' => trim(optional($selectedLead->arrival_date)->format('d/m/Y').' '.$selTime),
+        'Tarikh pulang' => optional($selectedLead->end_date)->format('d/m/Y'),
         'Kenderaan' => $selectedLead->vehicle_name_snapshot, 'Penumpang' => $selectedLead->passengers,
-        'Dihantar' => optional($selectedLead->submitted_at)->timezone(config('app.timezone'))->format('d/m/Y H:i'),
+        'Dihantar' => optional($selectedLead->submitted_at)->format('d/m/Y H:i'),
       ] : [
-        'No. Rujukan' => $selectedLead->referenceNumber(), 'Sumber' => $selectedLead->sourceLabel(),
-        'Status' => ucfirst(str_replace('_',' ',$selectedLead->status)),
-        'Nama' => $selectedLead->full_name, 'Telefon' => $selectedLead->phone, 'Email' => $selectedLead->email ?: '-',
-        'Datang Dari' => $selectedLead->origin, 'Airport' => $selectedLead->airport,
-        'Tarikh/Masa Ketibaan' => trim(optional($selectedLead->arrival_date)->format('d/m/Y').' '.$selTime),
-        'Tarikh Tamat Sewa' => optional($selectedLead->end_date)->format('d/m/Y'),
+        'Telefon' => $selectedLead->phone, 'E-mel' => $selectedLead->email,
+        'Datang dari' => $selectedLead->origin, 'Airport' => $selectedLead->airport,
+        'Tarikh / masa ketibaan' => trim(optional($selectedLead->arrival_date)->format('d/m/Y').' '.$selTime),
+        'Tarikh tamat sewa' => optional($selectedLead->end_date)->format('d/m/Y'),
         'Tujuan' => $selectedLead->purpose, 'Kenderaan' => $selectedLead->vehicle_name_snapshot,
-        'Model Lain' => $selectedLead->other_vehicle_model ?: '-',
+        'Model lain' => $selectedLead->other_vehicle_model,
         'Penumpang' => $selectedLead->passengers, 'Luggage' => $selectedLead->luggage,
         'Destinasi' => $selectedLead->destination,
-        'Dihantar' => optional($selectedLead->submitted_at)->timezone(config('app.timezone'))->format('d/m/Y H:i'),
+        'Dihantar' => optional($selectedLead->submitted_at)->format('d/m/Y H:i'),
       ];
-      $inp = 'w-full box-border px-3 py-2.5 rounded-lg border border-white/15 bg-[#0A0A0A] text-white text-[13.5px] focus:outline-none focus:border-white/50';
-      $lbl = 'grid gap-1.5 text-[11.5px] font-bold tracking-wide text-white/55';
+      // [key, label, type, options|null, required]
+      $customerFields = [
+        ['full_name', 'Nama penuh', 'text', null, true],
+        ['phone', 'Telefon', 'text', null, true],
+        ['email', 'E-mel', 'email', null, false],
+        ['status', 'Status', 'select', $statusLabels, true],
+      ];
+      if ($isGen) {
+        $customerFields[] = ['customer_category', 'Kategori', 'select', ['' => '-'] + $catOptions, false];
+        $customerFields[] = ['company_name', 'Syarikat', 'text', null, false];
+        $customerFields[] = ['driver_license', 'Lesen', 'select', ['' => '-'] + $licOptions, false];
+      }
+      $rentalFields = [['purpose', 'Tujuan', 'text', null, false]];
+      if ($isGen) {
+        $rentalFields[] = ['pickup_state', 'Negeri ambil', 'select', ['' => '-'] + array_combine($states, $states), false];
+        $rentalFields[] = ['pickup_location', 'Lokasi ambil', 'text', null, false];
+        $rentalFields[] = ['return_location', 'Lokasi pulang', 'text', null, false];
+      } else {
+        $rentalFields[] = ['origin', 'Datang dari', 'text', null, false];
+        $rentalFields[] = ['airport', 'Airport', 'text', null, false];
+        $rentalFields[] = ['destination', 'Destinasi', 'text', null, false];
+      }
+      $rentalFields[] = ['arrival_date', $isGen ? 'Tarikh ambil' : 'Tarikh ketibaan', 'date', null, false];
+      $rentalFields[] = ['arrival_time', $isGen ? 'Masa ambil' : 'Masa ketibaan', 'time', null, false];
+      $rentalFields[] = ['end_date', $isGen ? 'Tarikh pulang' : 'Tarikh tamat sewa', 'date', null, false];
+      $rentalFields[] = ['vehicle_name_snapshot', 'Kenderaan', 'text', null, false];
+      if (! $isGen) {
+        $rentalFields[] = ['other_vehicle_model', 'Model lain', 'text', null, false];
+        $rentalFields[] = ['luggage', 'Luggage', 'text', null, false];
+      }
+      $rentalFields[] = ['passengers', 'Penumpang', 'number', null, false];
     @endphp
 
-    <div class="fixed inset-0 z-[100] flex items-start md:items-center justify-center p-3 md:p-6"
-         x-data x-on:keydown.escape.window="$wire.closeLead()" role="dialog" aria-modal="true" wire:key="lead-modal-{{ $selectedLead->id }}-{{ $mode }}">
-      <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" wire:click="closeLead"></div>
-
-      <div class="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto bg-[#141414] border border-white/10 rounded-2xl shadow-2xl">
-        {{-- Header --}}
-        <div class="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-3 bg-[#141414] border-b border-white/8 px-5 md:px-7 py-4">
+    <div class="adm-modal" role="dialog" aria-modal="true" aria-labelledby="lead-modal-title"
+         x-data x-on:keydown.escape.window="$wire.closeLead()" wire:key="lead-modal-{{ $selectedLead->id }}-{{ $mode }}">
+      <div class="adm-modal__backdrop" wire:click="closeLead"></div>
+      <div class="adm-modal__panel">
+        <div class="adm-modal__head">
           <div>
-            <p class="m-0 text-[11px] font-bold tracking-[0.18em] text-brand-red">{{ $selectedLead->referenceNumber() }} · {{ $isGen ? 'BORANG UTAMA' : 'OUTSTATION' }}</p>
-            <p class="m-0 mt-0.5 text-lg font-extrabold">{{ $mode === 'edit' ? 'Edit Tempahan' : 'Detail Pelanggan' }} — {{ $selectedLead->full_name }}</p>
+            <p class="adm-modal__eyebrow">{{ $selectedLead->referenceNumber() }} · {{ $isGen ? 'BORANG UTAMA' : 'OUTSTATION' }}</p>
+            <h2 id="lead-modal-title" class="adm-modal__title">{{ $mode === 'edit' ? 'Edit tempahan' : $selectedLead->full_name }}</h2>
+            @if($mode === 'view')
+              <p style="margin-top:6px"><span class="adm-pill adm-pill--{{ $selectedLead->status }}">{{ $statusLabels[$selectedLead->status] ?? $selectedLead->status }}</span></p>
+            @endif
           </div>
-          <button type="button" wire:click="closeLead" class="text-white/60 hover:text-white text-[13px] font-semibold border border-white/15 rounded-lg px-3 py-1.5">Tutup ✕</button>
+          <button type="button" wire:click="closeLead" class="adm-iconbtn" aria-label="Tutup">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
         </div>
 
         @if($mode === 'view')
-          <div class="px-5 md:px-7 py-6 grid gap-6">
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 text-[13.5px]">
+          <div class="adm-modal__body">
+            <dl class="adm-dl">
               @foreach($detailRows as $label => $value)
-                <div>
-                  <p class="m-0 mb-0.5 text-[11.5px] font-bold tracking-wide text-white/45">{{ $label }}</p>
-                  <p class="m-0 break-words">{{ $value === null || $value === '' ? '-' : $value }}</p>
-                </div>
+                <div><dt>{{ $label }}</dt><dd>{{ ($value === null || $value === '') ? '-' : $value }}</dd></div>
               @endforeach
-            </div>
+            </dl>
             <div>
-              <p class="m-0 mb-1 text-[11.5px] font-bold tracking-wide text-white/45">Catatan</p>
-              <p class="m-0 text-[13.5px] whitespace-pre-line bg-[#0A0A0A] border border-white/8 rounded-lg p-3.5">{{ $selectedLead->notes ?: '-' }}</p>
+              <p class="adm-section-label" style="margin-bottom:8px">Catatan</p>
+              <div class="adm-note">{{ $selectedLead->notes ?: '-' }}</div>
             </div>
             @if($selectedLead->utm_source || $selectedLead->utm_campaign || $selectedLead->fbclid)
-              <p class="m-0 text-[12px] text-white/45">Sumber iklan: {{ $selectedLead->utm_source ?: '-' }} / {{ $selectedLead->utm_campaign ?: '-' }}{{ $selectedLead->fbclid ? ' · Facebook click' : '' }}</p>
+              <p class="adm-hint">Sumber iklan: {{ $selectedLead->utm_source ?: '-' }} / {{ $selectedLead->utm_campaign ?: '-' }}{{ $selectedLead->fbclid ? ' · Facebook click' : '' }}</p>
             @endif
           </div>
-          <div class="sticky bottom-0 flex flex-wrap gap-2.5 justify-between bg-[#141414] border-t border-white/8 px-5 md:px-7 py-4">
-            <a href="https://wa.me/{{ $waCustomer }}" target="_blank" rel="noopener" class="bg-[#1FAF54] hover:bg-[#188f44] text-white text-[13px] font-bold px-4 py-2.5 rounded-lg">WhatsApp Pelanggan</a>
-            <div class="flex gap-2.5">
-              <button type="button" wire:click="deleteLead({{ $selectedLead->id }})" wire:confirm="Padam tempahan {{ $selectedLead->referenceNumber() }} ({{ $selectedLead->full_name }})? Tindakan ini tidak boleh dibatalkan." class="bg-brand-red/15 hover:bg-brand-red/30 text-red-300 text-[13px] font-bold px-4 py-2.5 rounded-lg">Padam</button>
-              <button type="button" wire:click="editLead({{ $selectedLead->id }})" class="bg-white text-black hover:bg-white/90 text-[13px] font-bold px-5 py-2.5 rounded-lg">Edit</button>
+          <div class="adm-modal__foot">
+            <a href="https://wa.me/{{ $waCustomer }}" target="_blank" rel="noopener" class="adm-btn adm-btn--wa">WhatsApp pelanggan</a>
+            <div class="adm-modal__foot-right">
+              <button type="button" wire:click="deleteLead({{ $selectedLead->id }})" wire:confirm="Padam tempahan {{ $selectedLead->referenceNumber() }} ({{ $selectedLead->full_name }})? Tindakan ini tidak boleh dibatalkan." class="adm-btn adm-btn--danger">Padam</button>
+              <button type="button" wire:click="editLead({{ $selectedLead->id }})" class="adm-btn adm-btn--primary">Edit</button>
             </div>
           </div>
         @else
-          <form wire:submit="saveLead">
-            <div class="px-5 md:px-7 py-6 grid gap-5">
-              <p class="m-0 text-[11.5px] font-bold tracking-[0.18em] text-white/40">MAKLUMAT PELANGGAN</p>
-              <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <label class="{{ $lbl }}">Nama Penuh *
-                  <input type="text" wire:model="form.full_name" class="{{ $inp }}">
-                  @error('form.full_name') <span class="text-red-400 text-xs font-semibold">{{ $message }}</span> @enderror
-                </label>
-                <label class="{{ $lbl }}">Telefon *
-                  <input type="text" wire:model="form.phone" class="{{ $inp }}">
-                  @error('form.phone') <span class="text-red-400 text-xs font-semibold">{{ $message }}</span> @enderror
-                </label>
-                <label class="{{ $lbl }}">Email
-                  <input type="email" wire:model="form.email" class="{{ $inp }}">
-                  @error('form.email') <span class="text-red-400 text-xs font-semibold">{{ $message }}</span> @enderror
-                </label>
-                <label class="{{ $lbl }}">Status *
-                  <select wire:model="form.status" class="{{ $inp }}">
-                    @foreach(\App\Livewire\Admin\BookingsTable::STATUSES as $s)
-                      <option value="{{ $s }}" class="bg-[#0A0A0A]">{{ ucfirst(str_replace('_',' ',$s)) }}</option>
-                    @endforeach
-                  </select>
-                  @error('form.status') <span class="text-red-400 text-xs font-semibold">{{ $message }}</span> @enderror
-                </label>
-                @if($isGen)
-                  <label class="{{ $lbl }}">Kategori
-                    <select wire:model="form.customer_category" class="{{ $inp }}">
-                      <option value="" class="bg-[#0A0A0A]">-</option>
-                      @foreach(\App\Models\Lead::CUSTOMER_CATEGORIES as $cat)
-                        <option value="{{ $cat }}" class="bg-[#0A0A0A]">{{ trans('form.categories.'.$cat.'.title', [], 'ms') }}</option>
-                      @endforeach
-                    </select>
+          <form wire:submit="saveLead" style="display:contents">
+            <div class="adm-modal__body">
+              <p class="adm-section-label">Maklumat pelanggan</p>
+              <div class="adm-fgrid adm-fgrid--3">
+                @foreach($customerFields as [$key, $label, $type, $options, $required])
+                  <label class="adm-field">
+                    <span class="adm-label">{{ $label }} @if($required)<em>*</em>@endif</span>
+                    @if($type === 'select')
+                      <select wire:model="form.{{ $key }}" class="adm-select">
+                        @foreach($options as $val => $text)<option value="{{ $val }}">{{ $text }}</option>@endforeach
+                      </select>
+                    @else
+                      <input type="{{ $type }}" wire:model="form.{{ $key }}" class="adm-input">
+                    @endif
+                    @error('form.'.$key) <span class="adm-error">{{ $message }}</span> @enderror
                   </label>
-                  <label class="{{ $lbl }}">Syarikat
-                    <input type="text" wire:model="form.company_name" class="{{ $inp }}">
-                  </label>
-                  <label class="{{ $lbl }}">Lesen
-                    <select wire:model="form.driver_license" class="{{ $inp }}">
-                      <option value="" class="bg-[#0A0A0A]">-</option>
-                      <option value="malaysia" class="bg-[#0A0A0A]">{{ trans('form.license_options.malaysia', [], 'ms') }}</option>
-                      <option value="international" class="bg-[#0A0A0A]">{{ trans('form.license_options.international', [], 'ms') }}</option>
-                    </select>
-                  </label>
-                @endif
+                @endforeach
               </div>
 
-              <p class="m-0 mt-2 text-[11.5px] font-bold tracking-[0.18em] text-white/40">BUTIRAN SEWAAN</p>
-              <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <label class="{{ $lbl }}">Tujuan
-                  <input type="text" wire:model="form.purpose" class="{{ $inp }}">
-                </label>
-                @if($isGen)
-                  <label class="{{ $lbl }}">Negeri Ambil
-                    <select wire:model="form.pickup_state" class="{{ $inp }}">
-                      <option value="" class="bg-[#0A0A0A]">-</option>
-                      @foreach(trans('form.states', [], 'ms') as $st)
-                        <option value="{{ $st }}" class="bg-[#0A0A0A]">{{ $st }}</option>
-                      @endforeach
-                    </select>
+              <p class="adm-section-label">Butiran sewaan</p>
+              <div class="adm-fgrid adm-fgrid--3">
+                @foreach($rentalFields as [$key, $label, $type, $options, $required])
+                  <label class="adm-field">
+                    <span class="adm-label">{{ $label }}</span>
+                    @if($type === 'select')
+                      <select wire:model="form.{{ $key }}" class="adm-select">
+                        @foreach($options as $val => $text)<option value="{{ $val }}">{{ $text }}</option>@endforeach
+                      </select>
+                    @else
+                      <input type="{{ $type }}" wire:model="form.{{ $key }}" class="adm-input" @if($type === 'number') min="1" max="50" @endif>
+                    @endif
+                    @error('form.'.$key) <span class="adm-error">{{ $message }}</span> @enderror
                   </label>
-                  <label class="{{ $lbl }}">Lokasi Ambil
-                    <input type="text" wire:model="form.pickup_location" class="{{ $inp }}">
-                  </label>
-                  <label class="{{ $lbl }}">Lokasi Pulang
-                    <input type="text" wire:model="form.return_location" class="{{ $inp }}">
-                  </label>
-                @else
-                  <label class="{{ $lbl }}">Datang Dari
-                    <input type="text" wire:model="form.origin" class="{{ $inp }}">
-                  </label>
-                  <label class="{{ $lbl }}">Airport
-                    <input type="text" wire:model="form.airport" class="{{ $inp }}">
-                  </label>
-                  <label class="{{ $lbl }}">Destinasi
-                    <input type="text" wire:model="form.destination" class="{{ $inp }}">
-                  </label>
-                @endif
-                <label class="{{ $lbl }}">{{ $isGen ? 'Tarikh Ambil' : 'Tarikh Ketibaan' }}
-                  <input type="date" wire:model="form.arrival_date" class="{{ $inp }} [color-scheme:dark]">
-                  @error('form.arrival_date') <span class="text-red-400 text-xs font-semibold">{{ $message }}</span> @enderror
-                </label>
-                <label class="{{ $lbl }}">{{ $isGen ? 'Masa Ambil' : 'Masa Ketibaan' }}
-                  <input type="time" wire:model="form.arrival_time" class="{{ $inp }} [color-scheme:dark]">
-                  @error('form.arrival_time') <span class="text-red-400 text-xs font-semibold">{{ $message }}</span> @enderror
-                </label>
-                <label class="{{ $lbl }}">{{ $isGen ? 'Tarikh Pulang' : 'Tarikh Tamat Sewa' }}
-                  <input type="date" wire:model="form.end_date" class="{{ $inp }} [color-scheme:dark]">
-                  @error('form.end_date') <span class="text-red-400 text-xs font-semibold">{{ $message }}</span> @enderror
-                </label>
-                <label class="{{ $lbl }}">Kenderaan
-                  <input type="text" wire:model="form.vehicle_name_snapshot" class="{{ $inp }}">
-                </label>
-                @unless($isGen)
-                  <label class="{{ $lbl }}">Model Lain
-                    <input type="text" wire:model="form.other_vehicle_model" class="{{ $inp }}">
-                  </label>
-                  <label class="{{ $lbl }}">Luggage
-                    <input type="text" wire:model="form.luggage" class="{{ $inp }}">
-                  </label>
-                @endunless
-                <label class="{{ $lbl }}">Penumpang
-                  <input type="number" min="1" max="50" wire:model="form.passengers" class="{{ $inp }}">
-                  @error('form.passengers') <span class="text-red-400 text-xs font-semibold">{{ $message }}</span> @enderror
-                </label>
+                @endforeach
               </div>
 
-              <label class="{{ $lbl }}">Catatan
-                <textarea wire:model="form.notes" rows="3" class="{{ $inp }} resize-y"></textarea>
+              <label class="adm-field">
+                <span class="adm-label">Catatan</span>
+                <textarea wire:model="form.notes" rows="3" class="adm-textarea"></textarea>
+                @error('form.notes') <span class="adm-error">{{ $message }}</span> @enderror
               </label>
             </div>
-            <div class="sticky bottom-0 flex flex-wrap gap-2.5 justify-end bg-[#141414] border-t border-white/8 px-5 md:px-7 py-4">
-              <button type="button" wire:click="cancelEdit" class="border border-white/15 hover:border-white/40 text-white text-[13px] font-bold px-4 py-2.5 rounded-lg">Batal</button>
-              <button type="submit" wire:loading.attr="disabled" class="bg-brand-red hover:opacity-90 text-white text-[13px] font-bold px-5 py-2.5 rounded-lg">
-                <span wire:loading.remove wire:target="saveLead">Simpan Perubahan</span>
-                <span wire:loading wire:target="saveLead">Menyimpan...</span>
-              </button>
+            <div class="adm-modal__foot">
+              <div class="adm-modal__foot-right">
+                <button type="button" wire:click="cancelEdit" class="adm-btn">Batal</button>
+                <button type="submit" class="adm-btn adm-btn--primary" wire:loading.attr="disabled" wire:target="saveLead">
+                  <span wire:loading.remove wire:target="saveLead">Simpan perubahan</span>
+                  <span wire:loading wire:target="saveLead">Menyimpan...</span>
+                </button>
+              </div>
             </div>
           </form>
         @endif

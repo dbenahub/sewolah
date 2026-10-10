@@ -13,7 +13,7 @@ return [
         'bookings' => 'Bookings & Customers',
         'pixels' => 'Pixel Settings',
         'vehicles' => 'Vehicles',
-        'page_settings' => 'Edit Landing Page',
+        'page_settings' => 'Site Settings',
         'change_password' => 'Change Password',
         'logout' => 'Log Out',
     ],

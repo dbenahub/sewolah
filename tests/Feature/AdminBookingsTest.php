@@ -52,13 +52,13 @@ class AdminBookingsTest extends TestCase
             ->call('viewLead', $lead->id)
             ->assertSet('selectedLeadId', $lead->id)
             ->assertSet('mode', 'view')
-            ->assertSee('Detail Pelanggan')
+            ->assertSee('lead-modal-title', false)
             ->assertSee('Shah Alam')
             ->assertSee('Nota asal')
-            ->assertSee('WhatsApp Pelanggan')
+            ->assertSee('WhatsApp pelanggan')
             ->call('closeLead')
             ->assertSet('selectedLeadId', null)
-            ->assertDontSee('Detail Pelanggan');
+            ->assertDontSee('lead-modal-title', false);
     }
 
     public function test_view_outstation_lead(): void
@@ -134,6 +134,45 @@ class AdminBookingsTest extends TestCase
 
         $this->assertNull(Lead::find($lead->id));
         $this->assertNotNull(Lead::find($other->id));
+    }
+
+    public function test_dashboard_renders_with_metrics(): void
+    {
+        $this->lead(['submitted_at' => now()->subDays(2), 'status' => 'disahkan']);
+        $this->lead(['submitted_at' => now()->subDay(), 'full_name' => 'Kedua', 'arrival_date' => now()->addDays(3)->toDateString()]);
+        $this->lead(['source' => 'outstation', 'customer_category' => null, 'pickup_state' => null, 'submitted_at' => now()]);
+
+        $admin = $this->admin();
+        $this->actingAs($admin)
+            ->get('/admin')
+            ->assertOk()
+            ->assertSee('Permohonan harian')
+            ->assertSee('Status permohonan')
+            ->assertSee('Kenderaan diminati')
+            ->assertSee('Jadual ambil kenderaan')
+            ->assertSee('data-theme-toggle', false)
+            ->assertSee('33%');
+
+        $this->actingAs($admin)->get('/admin')->assertSee('Kedua');
+
+        foreach (['7', '90', 'custom', '30'] as $range) {
+            Livewire::test(\App\Livewire\Admin\Dashboard::class)->call('setRange', $range)->assertOk()->assertSet('range', $range);
+        }
+    }
+
+    public function test_dashboard_with_no_data(): void
+    {
+        $this->actingAs($this->admin())->get('/admin')->assertOk()->assertSee('Tiada permohonan lagi.');
+    }
+
+    public function test_all_admin_pages_render(): void
+    {
+        $admin = $this->admin();
+        foreach (['/admin/bookings', '/admin/vehicles', '/admin/page-settings', '/admin/pixel-settings', '/admin/change-password'] as $url) {
+            $this->actingAs($admin)->get($url)->assertOk()->assertSee('adm-sidebar', false);
+        }
+        auth()->logout();
+        $this->get('/admin/login')->assertOk()->assertSee('ADMIN PANEL');
     }
 
     public function test_guest_cannot_access_admin(): void

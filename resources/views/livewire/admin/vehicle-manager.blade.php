@@ -1,50 +1,72 @@
-<div class="grid gap-6">
-  <h1 class="m-0 text-2xl font-extrabold">Pengurusan Kenderaan</h1>
+<div class="adm-grid" style="gap:20px">
+  <div class="adm-head">
+    <div>
+      <h1>Pengurusan Kenderaan</h1>
+      <p>Kenderaan yang dipaparkan di laman utama, borang permohonan dan halaman outstation.</p>
+    </div>
+  </div>
 
-  <form wire:submit="save" class="bg-[#141414] border border-white/8 rounded-2xl p-6 grid gap-4 max-w-xl">
-    <p class="m-0 text-[15px] font-bold">{{ $editingId ? 'Edit Kenderaan' : 'Tambah Kenderaan Baharu' }}</p>
-    <div class="grid sm:grid-cols-2 gap-4">
-      <label class="grid gap-1.5 text-[13px] font-semibold">Nama Kenderaan
-        <input type="text" wire:model="name" class="w-full box-border px-3.5 py-3 rounded-lg border border-white/15 bg-[#0A0A0A] text-white text-sm">
-      </label>
-      <label class="grid gap-1.5 text-[13px] font-semibold">Kategori
-        <input type="text" wire:model="category" class="w-full box-border px-3.5 py-3 rounded-lg border border-white/15 bg-[#0A0A0A] text-white text-sm">
-      </label>
+  <div class="adm-grid adm-grid--main" style="align-items:start">
+    <div class="adm-vgrid">
+      @forelse($vehicles as $v)
+        <article class="adm-card adm-vcard" wire:key="vehicle-{{ $v->id }}">
+          <div class="adm-vcard__img">
+            <img src="{{ $v->imageUrl() }}" alt="{{ $v->name }}" loading="lazy">
+          </div>
+          <div class="adm-vcard__body">
+            <div class="adm-vcard__flags">
+              <span class="adm-pill {{ $v->is_active ? 'adm-pill--disahkan' : 'adm-pill--batal' }}">{{ $v->is_active ? 'Aktif' : 'Tidak aktif' }}</span>
+              @if($v->is_featured)<span class="adm-tag adm-tag--general">FEATURED</span>@endif
+            </div>
+            <h3 style="font-size:16px;font-weight:800">{{ $v->name }}</h3>
+            <p class="adm-hint">{{ $v->category }}</p>
+            <div style="display:flex;gap:8px;margin-top:6px">
+              <button type="button" wire:click="edit({{ $v->id }})" class="adm-btn adm-btn--sm adm-btn--soft">Edit</button>
+              <button type="button" wire:click="delete({{ $v->id }})" wire:confirm="Padam kenderaan {{ $v->name }}?" class="adm-btn adm-btn--sm adm-btn--danger">Padam</button>
+            </div>
+          </div>
+        </article>
+      @empty
+        <p class="adm-empty">Tiada kenderaan lagi.</p>
+      @endforelse
     </div>
-    <label class="grid gap-1.5 text-[13px] font-semibold">Tags (BM) — pisah dengan koma
-      <input type="text" wire:model="tagsMs" class="w-full box-border px-3.5 py-3 rounded-lg border border-white/15 bg-[#0A0A0A] text-white text-sm">
-    </label>
-    <label class="grid gap-1.5 text-[13px] font-semibold">Tags (EN) — comma separated
-      <input type="text" wire:model="tagsEn" class="w-full box-border px-3.5 py-3 rounded-lg border border-white/15 bg-[#0A0A0A] text-white text-sm">
-    </label>
-    <label class="grid gap-1.5 text-[13px] font-semibold">CTA Label
-      <input type="text" wire:model="ctaLabel" class="w-full box-border px-3.5 py-3 rounded-lg border border-white/15 bg-[#0A0A0A] text-white text-sm">
-    </label>
-    <label class="grid gap-1.5 text-[13px] font-semibold">Gambar Kenderaan
-      <input type="file" wire:model="newImage" class="text-sm">
-    </label>
-    <div class="flex gap-5 text-[13px]">
-      <label class="flex gap-2 items-center"><input type="checkbox" wire:model="isFeatured"> Featured</label>
-      <label class="flex gap-2 items-center"><input type="checkbox" wire:model="isActive"> Active</label>
-    </div>
-    <div class="flex gap-3">
-      <button type="submit" class="bg-brand-red text-white font-bold text-[13.5px] px-5.5 py-3 rounded-lg">SIMPAN</button>
-      @if($editingId)
-        <button type="button" wire:click="resetForm" class="bg-transparent border border-white/15 text-white text-[13.5px] font-bold px-5.5 py-3 rounded-lg">Batal</button>
-      @endif
-    </div>
-  </form>
 
-  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-    @foreach($vehicles as $v)
-      <div class="bg-[#141414] border border-white/8 rounded-2xl p-5 grid gap-2.5">
-        <p class="m-0 font-bold">{{ $v->name }}</p>
-        <p class="m-0 text-xs text-white/50">{{ $v->category }}</p>
-        <div class="flex gap-2 mt-1.5">
-          <button wire:click="edit({{ $v->id }})" class="text-xs bg-white/10 px-3 py-1.5 rounded-lg">Edit</button>
-          <button wire:click="delete({{ $v->id }})" wire:confirm="Padam kenderaan ini?" class="text-xs bg-red-600/20 text-red-300 px-3 py-1.5 rounded-lg">Padam</button>
-        </div>
+    <form wire:submit="save" class="adm-card adm-form">
+      <div>
+        <h2 class="adm-card__title">{{ $editingId ? 'Edit kenderaan' : 'Tambah kenderaan baharu' }}</h2>
+        <p class="adm-card__sub">Gambar disyorkan nisbah 4:3, sekurang-kurangnya 1200px lebar.</p>
       </div>
-    @endforeach
+      <label class="adm-field"><span class="adm-label">Nama kenderaan <em>*</em></span>
+        <input type="text" wire:model="name" class="adm-input" placeholder="Contoh: Toyota Alphard SC">
+        @error('name') <span class="adm-error">{{ $message }}</span> @enderror
+      </label>
+      <label class="adm-field"><span class="adm-label">Kategori <em>*</em></span>
+        <input type="text" wire:model="category" class="adm-input" placeholder="Contoh: PREMIUM FAMILY MPV">
+        @error('category') <span class="adm-error">{{ $message }}</span> @enderror
+      </label>
+      <label class="adm-field"><span class="adm-label">Tags (BM) — pisah dengan koma</span>
+        <input type="text" wire:model="tagsMs" class="adm-input">
+      </label>
+      <label class="adm-field"><span class="adm-label">Tags (EN) — comma separated</span>
+        <input type="text" wire:model="tagsEn" class="adm-input">
+      </label>
+      <label class="adm-field"><span class="adm-label">Label butang (CTA)</span>
+        <input type="text" wire:model="ctaLabel" class="adm-input" placeholder="Contoh: TEMPAH ALPHARD">
+      </label>
+      <label class="adm-field"><span class="adm-label">Gambar kenderaan</span>
+        <input type="file" wire:model="newImage" accept="image/*" class="adm-input" style="padding:8px">
+        <span wire:loading wire:target="newImage" class="adm-hint">Memuat naik...</span>
+      </label>
+      <div style="display:flex;gap:20px">
+        <label class="adm-check"><input type="checkbox" wire:model="isFeatured"> Featured</label>
+        <label class="adm-check"><input type="checkbox" wire:model="isActive"> Aktif</label>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button type="submit" class="adm-btn adm-btn--primary">Simpan</button>
+        @if($editingId)
+          <button type="button" wire:click="resetForm" class="adm-btn">Batal</button>
+        @endif
+      </div>
+    </form>
   </div>
 </div>
