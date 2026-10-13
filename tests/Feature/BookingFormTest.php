@@ -45,7 +45,8 @@ class BookingFormTest extends TestCase
             ->set('consent', true)
             ->call('submit')
             ->assertSet('submitted', true)
-            ->assertDispatched('lead-submitted');
+            ->assertDispatched('lead-submitted')
+            ->assertDispatched('open-whatsapp');
 
         $this->assertDatabaseHas('leads', [
             'source' => 'outstation',

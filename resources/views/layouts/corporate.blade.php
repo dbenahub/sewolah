@@ -48,6 +48,7 @@
     <script>
       const sewolahMetaPixelId = @json((string) $pixelSettings->meta_pixel_id);
       const sewolahTrackedLeadEvents = new Set();
+      window.sewolahLeadTrackingReady = Promise.resolve();
       function sewolahConsentValue() { try { return localStorage.getItem('sewolah_marketing_consent'); } catch (e) { return null; } }
       function loadSewolahMetaPixel() {
         if (window.fbq) return;
@@ -64,7 +65,10 @@
         const eventId = event.detail?.eventId;
         if (!window.fbq || !eventId || sewolahTrackedLeadEvents.has(eventId)) return;
         sewolahTrackedLeadEvents.add(eventId);
-        fbq('track', 'Lead', {}, { eventID: eventId });
+        window.sewolahLeadTrackingReady = new Promise((resolve) => {
+          fbq('track', 'Lead', {}, { eventID: eventId });
+          window.setTimeout(resolve, 1200);
+        });
       });
       if (sewolahConsentValue() === 'granted') loadSewolahMetaPixel();
     </script>

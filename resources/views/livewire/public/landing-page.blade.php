@@ -248,8 +248,9 @@
     window.addEventListener('scroll-to-booking-form', () => {
       document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth' });
     });
-    window.addEventListener('open-whatsapp', (e) => {
-      window.location.href = e.detail.url;
+    window.addEventListener('open-whatsapp', async (e) => {
+      await (window.sewolahLeadTrackingReady ?? Promise.resolve());
+      window.location.assign(e.detail.url);
     });
   </script>
 </div>

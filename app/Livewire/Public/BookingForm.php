@@ -181,8 +181,8 @@ class BookingForm extends Component
 
         $this->submitted = true;
 
-        $this->dispatch('open-whatsapp', url: $whatsappUrl);
         $this->dispatch('lead-submitted', eventId: 'lead_'.$lead->id.'_'.Str::uuid());
+        $this->dispatch('open-whatsapp', url: $whatsappUrl);
     }
 
     protected function buildWhatsappUrl(Lead $lead, string $number): string
