@@ -12,10 +12,15 @@
     <link rel="canonical" href="{{ url()->current() }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @include('partials.fonts')
+    @php($outstationHero = \App\Support\Img::opt('outstation-hero', [640, 960, 1280, 1600], 960, 'images/hero-full.jpg'))
+    <link rel="preload" as="image" href="{{ $outstationHero['src'] }}" @if($outstationHero['srcset']) imagesrcset="{{ $outstationHero['srcset'] }}" imagesizes="(max-width: 767px) 100vw, 50vw" @endif fetchpriority="high">
+    @if($inlineCss = \App\Support\InlineCss::vite('resources/css/app.css'))
+    <style>{!! $inlineCss !!}picture{display:contents}</style>
+    @else
+    @vite(['resources/css/app.css'])
+    <style>picture{display:contents}</style>
+    @endif
     @livewireStyles
 
     {{-- Meta Pixel (dynamic, from admin settings or META_PIXEL_ID) --}}

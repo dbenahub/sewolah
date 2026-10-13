@@ -9,6 +9,8 @@
     $cssVersion = file_exists($cssPath) ? filemtime($cssPath) : '1';
     $isHome = request()->routeIs('home');
     $navBase = $isHome ? '' : route('home');
+    $withLivewire = $withLivewire ?? true;
+    $logoLight = \App\Support\Img::logo('logo-light', 'images/home/logo-light.png');
 @endphp
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
@@ -29,11 +31,18 @@
     <link rel="canonical" href="{{ url()->current() }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    @include('partials.fonts')
+    @if($preloadImage ?? null)
+    <link rel="preload" as="image" href="{{ $preloadImage['src'] }}" @if(!empty($preloadImage['srcset'])) imagesrcset="{{ $preloadImage['srcset'] }}" imagesizes="100vw" @endif fetchpriority="high">
+    @endif
+    @if($inlineCss = \App\Support\InlineCss::file('css/sewolah.css'))
+    <style>{!! $inlineCss !!}</style>
+    @else
     <link rel="stylesheet" href="{{ asset('css/sewolah.css') }}?v={{ $cssVersion }}">
+    @endif
+    @if($withLivewire)
     @livewireStyles
+    @endif
 
     @if($pixelSettings->meta_pixel_id ?? false)
     <script>
@@ -68,7 +77,7 @@
     <header class="sw-header" data-header>
       <div class="sw-container sw-header__inner">
         <a href="{{ route('home') }}" class="sw-header__logo" aria-label="SEWOLAH">
-          <img src="{{ asset('images/home/logo-light.png') }}" alt="SEWOLAH — Rent With Confidence" width="640" height="122">
+          <x-logo :image="$logoLight" alt="SEWOLAH — Rent With Confidence" width="420" height="80" />
         </a>
 
         <nav class="sw-nav" aria-label="Primary">
@@ -99,7 +108,7 @@
     {{-- MOBILE MENU --}}
     <div class="sw-menu" data-menu hidden>
       <div class="sw-menu__top">
-        <img src="{{ asset('images/home/logo-light.png') }}" alt="SEWOLAH" class="sw-menu__logo">
+        <x-logo :image="$logoLight" alt="SEWOLAH" class="sw-menu__logo" width="420" height="80" loading="lazy" />
         <button type="button" class="sw-menu__close" data-menu-close>{{ __('home.nav.close') }} ✕</button>
       </div>
       <nav class="sw-menu__nav">
@@ -123,7 +132,7 @@
       <div class="sw-container">
         <div class="sw-footer__grid">
           <div class="sw-footer__brand">
-            <img src="{{ asset('images/home/logo-light.png') }}" alt="SEWOLAH" class="sw-footer__logo" loading="lazy">
+            <x-logo :image="$logoLight" alt="SEWOLAH" class="sw-footer__logo" width="420" height="80" loading="lazy" />
             <p>{{ __('home.footer.tagline') }}</p>
           </div>
           <div>
@@ -190,7 +199,9 @@
       </script>
     @endif
 
+    @if($withLivewire)
     @livewireScripts
+    @endif
     <script>
       (function () {
         const header = document.querySelector('[data-header]');

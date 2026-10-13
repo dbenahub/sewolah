@@ -1,8 +1,14 @@
+@php
+    $logoBlack = \App\Support\Img::logo('logo-black', 'images/logo-black.png');
+    $outstationHero = \App\Support\Img::opt('outstation-hero', [640, 960, 1280, 1600], 960, 'images/hero-full.jpg');
+    $familyTravel = \App\Support\Img::opt('family-travel', [480, 800, 1200], 800, 'images/family-travel.jpg');
+    $businessTravel = \App\Support\Img::opt('business-travel', [480, 800, 1200], 800, 'images/business-travel.jpg');
+@endphp
 <div>
   {{-- HEADER --}}
   <header class="sticky top-0 z-50 bg-black/85 backdrop-blur border-b border-white/10">
     <div class="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between gap-5">
-      <a href="{{ route('home') }}"><img src="{{ asset('images/logo-black.png') }}" alt="SEWOLAH" class="h-10"></a>
+      <a href="{{ route('home') }}"><x-logo :image="$logoBlack" alt="SEWOLAH" class="h-10 w-auto" width="288" height="96" /></a>
       <nav class="hidden md:flex gap-6 text-[13px] font-semibold tracking-wide flex-wrap">
         <a href="#kereta" class="text-white hover:text-brand-red">{{ __('landing.nav.vehicles') }}</a>
         <a href="#cara" class="text-white hover:text-brand-red">{{ __('landing.nav.how') }}</a>
@@ -29,7 +35,7 @@
       <p class="m-0 mt-1 text-[13px] text-white/50 max-w-md">{{ __('landing.hero.microcopy') }}</p>
     </div>
     <div class="rounded-[20px] overflow-hidden border border-white/10">
-      <img src="{{ asset('images/hero-full.jpg') }}" alt="SEWOLAH premium fleet" class="w-full block" loading="eager">
+      <x-picture :image="$outstationHero" sizes="(max-width: 767px) 100vw, 50vw" alt="SEWOLAH premium fleet" class="w-full h-auto block" width="2056" height="765" fetchpriority="high" />
     </div>
   </section>
 
@@ -86,7 +92,7 @@
         @foreach($vehicles as $v)
           <div class="bg-white rounded-2xl overflow-hidden border border-black/8 grid">
             <div class="h-44 overflow-hidden">
-              <img src="{{ $v->imageUrl() }}" alt="{{ $v->name }}" class="w-full h-full object-cover block" loading="lazy">
+              <x-picture :image="\App\Support\Img::vehicle($v)" sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 400px" alt="{{ $v->name }}" class="w-full h-full object-cover block" width="1200" height="900" loading="lazy" />
             </div>
             <div class="p-6 grid gap-3">
               <div>
@@ -128,7 +134,7 @@
   {{-- FAMILY TRAVEL --}}
   <section class="max-w-7xl mx-auto px-6 py-12 md:py-20 grid md:grid-cols-2 gap-8 items-center">
     <div class="rounded-[20px] overflow-hidden h-64 md:h-72">
-      <img src="{{ asset('images/family-travel.jpg') }}" alt="Family traveller at KLIA arrival" class="w-full h-full object-cover block" loading="lazy">
+      <x-picture :image="$familyTravel" sizes="(max-width: 767px) 100vw, 50vw" alt="Family traveller at KLIA arrival" class="w-full h-full object-cover block" width="1536" height="1024" loading="lazy" />
     </div>
     <div class="grid gap-3.5">
       <h2 class="m-0 text-2xl md:text-4xl font-extrabold">{{ __('landing.family.title') }}</h2>
@@ -147,7 +153,7 @@
       <a href="#kereta" class="justify-self-start mt-1.5 bg-white text-black font-bold text-sm px-6 py-3.5 rounded-lg">{{ __('landing.business.cta') }}</a>
     </div>
     <div class="rounded-[20px] overflow-hidden h-64 md:h-72 md:order-1">
-      <img src="{{ asset('images/business-travel.jpg') }}" alt="Executive traveller, corporate arrival" class="w-full h-full object-cover block" loading="lazy">
+      <x-picture :image="$businessTravel" sizes="(max-width: 767px) 100vw, 50vw" alt="Executive traveller, corporate arrival" class="w-full h-full object-cover block" width="1536" height="1024" loading="lazy" />
     </div>
   </section>
 
@@ -201,7 +207,7 @@
   <footer class="border-t border-white/8">
     <div class="max-w-7xl mx-auto px-6 py-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
       <div class="grid gap-3 content-start">
-        <img src="{{ asset('images/logo-black.png') }}" alt="SEWOLAH" class="h-9">
+        <x-logo :image="$logoBlack" alt="SEWOLAH" class="h-9 w-auto" width="288" height="96" loading="lazy" />
         <p class="m-0 text-[13px] text-white/55">{{ __('landing.footer.tagline') }}</p>
         <p class="m-0 text-xs text-white/40">{{ __('landing.footer.segments') }}</p>
         <p class="m-0 text-xs text-white/40">{{ __('landing.footer.location') }}</p>

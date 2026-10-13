@@ -1,11 +1,8 @@
 @php
     $d = fn ($text) => str_replace(':days', (string) $minDays, $text);
     $waNumber = preg_replace('/[^0-9]/', '', (string) $pageSettings->whatsapp_number);
-    $fleetImage = function ($vehicle) {
-        $base = pathinfo((string) $vehicle->image_path, PATHINFO_FILENAME);
-        $optimized = 'images/home/fleet/'.$base.'.jpg';
-        return ($base && file_exists(public_path($optimized))) ? asset($optimized) : $vehicle->imageUrl();
-    };
+    $heroImage = $heroImage ?? \App\Support\Img::opt('home-hero', [640, 960, 1280, 1536], 1280, 'images/home/hero.jpg');
+    $familyImage = \App\Support\Img::opt('home-family', [480, 840, 1200], 840, 'images/home/family.jpg');
     $icons = [
         'individual' => '<path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm8 1a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM2.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5M14 14.3c.6-.2 1.3-.3 2-.3 2.4 0 4.3 1.6 4.8 4.4"/>',
         'corporate' => '<path d="M3.5 20.5h17M5.5 20.5V5.5l7-2v17M12.5 8.5h6v12M8.5 8h1M8.5 11.5h1M8.5 15h1M15 12h1M15 15.5h1"/>',
@@ -18,7 +15,7 @@
   {{-- ============ HERO ============ --}}
   <section class="sw-hero" aria-labelledby="hero-title">
     <div class="sw-hero__media" aria-hidden="true">
-      <img src="{{ asset('images/home/hero.jpg') }}" alt="" fetchpriority="high">
+      <x-picture :image="$heroImage" sizes="100vw" alt="" width="1536" height="1024" fetchpriority="high" />
     </div>
     <div class="sw-container sw-hero__content">
       <p class="sw-eyebrow sw-eyebrow--light">{{ __('home.hero.eyebrow') }}</p>
@@ -98,7 +95,7 @@
 
       <div class="sw-services">
         <figure class="sw-services__feature" data-reveal>
-          <img src="{{ asset('images/home/family.jpg') }}" alt="" loading="lazy">
+          <x-picture :image="$familyImage" sizes="(max-width: 900px) 100vw, 50vw" alt="" width="1400" height="933" loading="lazy" />
           <figcaption>{{ __('home.about.signature') }}</figcaption>
         </figure>
         <div class="sw-services__list">
@@ -145,7 +142,7 @@
         @foreach($vehicles as $vehicle)
           <article class="sw-car" data-reveal>
             <div class="sw-car__media">
-              <img src="{{ $fleetImage($vehicle) }}" alt="{{ $vehicle->name }}" loading="lazy">
+              <x-picture :image="\App\Support\Img::vehicle($vehicle)" sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 400px" alt="{{ $vehicle->name }}" width="1200" height="900" loading="lazy" />
             </div>
             <div class="sw-car__body">
               <p class="sw-car__cat">{{ $vehicle->category }}</p>

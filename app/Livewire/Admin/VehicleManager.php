@@ -61,6 +61,8 @@ class VehicleManager extends Component
 
         if ($this->newImage) {
             $data['image_path'] = $this->newImage->store('vehicles', 'public');
+            // Pre-build fast WebP copies for the public pages (no-op if GD lacks WebP)
+            \App\Support\Img::generateVehicleVariants($data['image_path']);
         }
 
         Vehicle::updateOrCreate(['id' => $this->editingId], $data);

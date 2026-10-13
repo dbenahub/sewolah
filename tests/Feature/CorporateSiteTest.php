@@ -38,8 +38,36 @@ class CorporateSiteTest extends TestCase
             ->assertSee('Semenanjung Malaysia')
             ->assertSee(route('booking.form'))
             ->assertSee('Toyota Alphard SC')
-            ->assertSee('images/home/fleet/car-alphard.jpg')
+            ->assertSee('images/opt/vehicle-car-alphard-400.webp')
+            ->assertSee('images/opt/vehicle-car-alphard-800.jpg')
             ->assertSee('3 hari bekerja');
+    }
+
+    public function test_pages_are_built_for_fast_first_load(): void
+    {
+        $this->vehicle();
+
+        // Homepage: no Livewire JS, CSS inlined, responsive WebP hero preloaded
+        $home = $this->get('/?utm_source=facebook&utm_campaign=test')->assertOk();
+        $html = $home->getContent();
+        $this->assertStringNotContainsString('livewire.js', $html);
+        $this->assertStringNotContainsString('livewire.min.js', $html);
+        $this->assertStringNotContainsString('css/sewolah.css', $html);
+        $this->assertStringContainsString('<style>', $html);
+        $this->assertStringContainsString('.sw-hero', $html);
+        $this->assertStringContainsString('rel="preload" as="image"', $html);
+        $this->assertStringContainsString('images/opt/home-hero-960.webp 960w', $html);
+        $this->assertStringContainsString('type="image/webp"', $html);
+        $this->assertSame('facebook', session('utm.utm_source'));
+
+        // Booking form still runs on Livewire
+        $this->get('/form')->assertOk()->assertSee('livewire', false);
+
+        // Outstation (ads landing): optimised images, no 2-3MB originals
+        $out = $this->get('/outstation')->assertOk()->getContent();
+        $this->assertDoesNotMatchRegularExpression('/(?:src|href)="[^"]*(?:images\/(?:hero-full|family-travel|business-travel|logo-black)|storage\/vehicles\/car-alphard)\.(?:jpg|png)"/', $out);
+        $this->assertStringContainsString('images/opt/outstation-hero-640.webp 640w', $out);
+        $this->assertStringContainsString('images/opt/logo-black.webp', $out);
     }
 
     public function test_homepage_in_english(): void

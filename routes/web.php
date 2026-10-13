@@ -6,9 +6,9 @@ use App\Livewire\Admin\Dashboard;
 use App\Livewire\Admin\PageSettings;
 use App\Livewire\Admin\PixelSettings;
 use App\Livewire\Admin\VehicleManager;
-use App\Livewire\Public\Home;
 use App\Livewire\Public\LandingPage;
 use App\Livewire\Public\RequestForm;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegalPageController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 // Corporate main website
-Route::get('/', Home::class)->name('home');
+Route::get('/', HomeController::class)->name('home');
 
 // Standalone booking application form (shareable link, e.g. via WhatsApp)
 Route::get('/form', RequestForm::class)->name('booking.form');

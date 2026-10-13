@@ -17,8 +17,7 @@
       })();
     </script>
     <link rel="icon" href="{{ asset('favicon.ico') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    @include('partials.fonts')
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v={{ file_exists($adminCss) ? filemtime($adminCss) : '1' }}">
 </head>
 <body class="adm">
