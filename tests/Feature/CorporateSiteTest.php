@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Livewire\Public\RequestForm;
 use App\Mail\CustomerBookingConfirmation;
 use App\Mail\NewLeadNotification;
+use App\Models\CarRate;
 use App\Models\Lead;
 use App\Models\PageSetting;
 use App\Models\Vehicle;
@@ -23,6 +24,7 @@ class CorporateSiteTest extends TestCase
     {
         return Vehicle::create([
             'name' => 'Toyota Alphard SC', 'category' => 'PREMIUM FAMILY MPV',
+            'car_rate_id' => CarRate::where('model', 'Alphard SC')->value('id'),
             'image_path' => 'vehicles/car-alphard.jpg',
             'tags' => ['ms' => [], 'en' => []], 'is_featured' => true, 'is_active' => true, 'sort_order' => 1,
         ]);
@@ -48,6 +50,7 @@ class CorporateSiteTest extends TestCase
         $this->vehicle();
 
         // Homepage: no Livewire JS, CSS inlined, responsive WebP hero preloaded
+        Livewire::flushState(); // reset per-request render flags left by earlier tests in this process
         $home = $this->get('/?utm_source=facebook&utm_campaign=test')->assertOk();
         $html = $home->getContent();
         $this->assertStringNotContainsString('livewire.js', $html);
@@ -131,7 +134,7 @@ class CorporateSiteTest extends TestCase
         PageSetting::current()->update(['admin_notification_email' => 'sewolah.hq@gmail.com', 'whatsapp_number' => '601116946696']);
         $vehicle = $this->vehicle();
 
-        $component = $this->fillValidStepsOneAndTwo(Livewire::test(RequestForm::class), 'corporate', (string) $vehicle->id)
+        $component = $this->fillValidStepsOneAndTwo(Livewire::test(RequestForm::class), 'corporate', 'r'.$vehicle->car_rate_id)
             ->set('fullName', 'Nurul Aisyah Binti Ahmad')
             ->set('phone', '012-345 6789')
             ->set('email', 'aisyah@example.com')
@@ -152,6 +155,14 @@ class CorporateSiteTest extends TestCase
         $this->assertSame($vehicle->id, $lead->vehicle_id);
         $this->assertSame('malaysia', $lead->driver_license);
         $this->assertSame('baru', $lead->status);
+        $this->assertSame('permohonan', $lead->stage);
+        // Quotation calculated at submission: Alphard SC RM1,000/day (list RM1,300), 4 days, 3-day package
+        $this->assertSame($vehicle->car_rate_id, $lead->car_rate_id);
+        $this->assertSame(4, $lead->rental_days);
+        $this->assertSame(1300, $lead->quoted_list_daily);
+        $this->assertSame(1000, $lead->quoted_daily);
+        $this->assertSame(3800, $lead->quoted_rental_total);
+        $this->assertSame(1000, $lead->deposit_amount);
 
         $wa = $component->get('whatsappUrl');
         $this->assertStringStartsWith('https://wa.me/601116946696?text=', $wa);
@@ -243,6 +254,11 @@ class CorporateSiteTest extends TestCase
         Livewire::withQueryParams(['kategori' => 'event', 'kenderaan' => (string) $vehicle->id])
             ->test(RequestForm::class)
             ->assertSet('customerCategory', 'event')
-            ->assertSet('vehicleId', (string) $vehicle->id);
+            ->assertSet('vehicleId', 'r'.$vehicle->car_rate_id);
+
+        $bezza = CarRate::where('model', 'Bezza')->value('id');
+        Livewire::withQueryParams(['kereta' => (string) $bezza])
+            ->test(RequestForm::class)
+            ->assertSet('vehicleId', 'r'.$bezza);
     }
 }

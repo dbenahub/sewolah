@@ -29,6 +29,18 @@ Route::redirect('/tempah', '/form', 301);
 // Outstation / airport landing page (previously the homepage)
 Route::get('/outstation', LandingPage::class)->name('landing');
 
+// Customer booking portal: eligibility check, T&C, payment & status
+Route::get('/tempahan/{token}', \App\Livewire\Public\BookingPortal::class)
+    ->where('token', '[A-Za-z0-9]{32,64}')
+    ->middleware('throttle:60,1')
+    ->name('booking.portal');
+Route::get('/terma-sewaan', [\App\Http\Controllers\RentalTermsController::class, 'show'])->name('rental.terms');
+
+// One-tap actions from the PIC email (signed links)
+Route::get('/pic/tempahan/{lead}/{action}', [\App\Http\Controllers\PicActionController::class, 'whatsapp'])
+    ->middleware(['signed', 'throttle:30,1'])
+    ->name('pic.whatsapp');
+
 Route::get('/privacy-policy', [LegalPageController::class, 'privacy'])->name('privacy-policy');
 Route::get('/terms', [LegalPageController::class, 'terms'])->name('terms');
 
@@ -55,6 +67,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/', Dashboard::class)->name('dashboard');
         Route::get('/bookings', BookingsTable::class)->name('bookings');
+        Route::get('/bookings/{lead}', \App\Livewire\Admin\BookingManager::class)->name('bookings.manage');
+        Route::get('/bookings/{lead}/dokumen/{document}', [\App\Http\Controllers\Admin\LeadDocumentController::class, 'show'])->name('bookings.document');
+        Route::get('/harga-kereta', \App\Livewire\Admin\CarRates::class)->name('car-rates');
+        Route::get('/tetapan-bayaran', \App\Livewire\Admin\PaymentSettings::class)->name('payment-settings');
         Route::get('/pixel-settings', PixelSettings::class)->name('pixel-settings');
         Route::get('/page-settings', PageSettings::class)->name('page-settings');
         Route::get('/vehicles', VehicleManager::class)->name('vehicles');

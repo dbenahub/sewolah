@@ -13,6 +13,7 @@ class VehicleManager extends Component
     public $editingId = null;
     public string $name = '';
     public string $category = '';
+    public string $carRateId = '';
     public string $tagsMs = '';
     public string $tagsEn = '';
     public string $ctaLabel = '';
@@ -26,6 +27,7 @@ class VehicleManager extends Component
         $this->editingId = $v->id;
         $this->name = $v->name;
         $this->category = $v->category;
+        $this->carRateId = (string) ($v->car_rate_id ?? '');
         $this->tagsMs = implode(', ', $v->tags['ms'] ?? []);
         $this->tagsEn = implode(', ', $v->tags['en'] ?? []);
         $this->ctaLabel = $v->cta_label;
@@ -35,7 +37,7 @@ class VehicleManager extends Component
 
     public function resetForm()
     {
-        $this->reset(['editingId', 'name', 'category', 'tagsMs', 'tagsEn', 'ctaLabel', 'newImage']);
+        $this->reset(['editingId', 'name', 'category', 'carRateId', 'tagsMs', 'tagsEn', 'ctaLabel', 'newImage']);
         $this->isFeatured = true;
         $this->isActive = true;
     }
@@ -45,11 +47,13 @@ class VehicleManager extends Component
         $this->validate([
             'name' => ['required', 'string', 'max:150'],
             'category' => ['required', 'string', 'max:100'],
+            'carRateId' => ['nullable', 'integer', 'exists:car_rates,id'],
         ]);
 
         $data = [
             'name' => $this->name,
             'category' => $this->category,
+            'car_rate_id' => $this->carRateId !== '' ? (int) $this->carRateId : null,
             'cta_label' => $this->ctaLabel,
             'tags' => [
                 'ms' => array_filter(array_map('trim', explode(',', $this->tagsMs))),

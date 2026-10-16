@@ -195,8 +195,12 @@
                   <select wire:model.live="vehicleId">
                     <option value="">{{ __('form.select') }}</option>
                     <option value="any">{{ __('form.fields.vehicle_any') }}</option>
-                    @foreach($this->vehicleOptions as $v)
-                      <option value="{{ $v->id }}">{{ $v->name }}{{ $v->category ? ' — '.$v->category : '' }}</option>
+                    @foreach($this->vehicleOptions as $brand => $rates)
+                      <optgroup label="{{ $brand }}">
+                        @foreach($rates as $r)
+                          <option value="r{{ $r->id }}">{{ $r->name() }}</option>
+                        @endforeach
+                      </optgroup>
                     @endforeach
                     <option value="other">{{ __('form.fields.vehicle_other') }}</option>
                   </select>
@@ -271,7 +275,7 @@
               <label class="sw-consent-check">
                 <input type="checkbox" wire:model="consent">
                 <span>{{ __('form.fields.consent', ['days' => $minDays]) }}
-                  <a href="{{ route('terms') }}" target="_blank" rel="noopener">{{ __('home.footer.terms') }}</a>
+                  <a href="{{ route('rental.terms') }}" target="_blank" rel="noopener">{{ __('home.footer.terms') }}</a>
                   {{ __('form.fields.and') }}
                   <a href="{{ route('privacy-policy') }}" target="_blank" rel="noopener">{{ __('home.footer.privacy') }}</a>.
                 </span>

@@ -26,15 +26,26 @@
               <p style="margin:0 0 4px;font-size:12px;font-weight:800;color:#E31E24;letter-spacing:0.5px;text-transform:uppercase;">{{ $lead->isGeneral() ? 'Permohonan Baharu · '.$lead->customerCategoryLabel('ms') : 'Tempahan Baharu · Outstation' }}</p>
               <p style="margin:0 0 20px;font-size:20px;font-weight:800;color:#111111;">{{ $lead->full_name }}</p>
 
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:22px;">
-                <tr>
-                  <td align="center" style="background-color:#25D366;border-radius:10px;">
-                    <a href="https://wa.me/{{ $customerWaNumber }}" style="display:block;padding:14px 20px;font-size:14px;font-weight:800;color:#ffffff;text-decoration:none;">
-                      HUBUNGI PELANGGAN DI WHATSAPP
-                    </a>
-                  </td>
-                </tr>
-              </table>
+              @include('emails.partials.quote-table')
+
+              <p style="margin:0 0 10px;font-size:12px;font-weight:800;color:#111111;letter-spacing:0.4px;text-transform:uppercase;">Tindakan PIC (ikut turutan SOP)</p>
+              @include('emails.partials.button', [
+                'href' => \App\Http\Controllers\PicActionController::signedUrl($lead, 'quote'),
+                'label' => $lead->hasQuote() ? '① WHATSAPP PELANGGAN — SAHKAN AVAILABLE & HARGA' : '① WHATSAPP PELANGGAN — SAHKAN PERMOHONAN',
+                'bg' => '#1FAF54',
+              ])
+              @include('emails.partials.button', [
+                'href' => \App\Http\Controllers\PicActionController::signedUrl($lead, 'verification'),
+                'label' => '② PELANGGAN SETUJU — HANTAR BORANG KELAYAKAN',
+                'bg' => '#111111',
+              ])
+              @include('emails.partials.button', [
+                'href' => route('admin.bookings.manage', $lead),
+                'label' => 'URUS TEMPAHAN & SEMAK SOP DI ADMIN',
+                'bg' => '#E31E24',
+                'mb' => 8,
+              ])
+              <p style="margin:0 0 22px;font-size:12px;line-height:1.55;color:#888888;">Butang ① & ② membuka WhatsApp dengan mesej siap dan merekod langkah SOP secara automatik.@unless($lead->hasQuote()) Pelanggan belum memilih model tertentu — pilih kereta di Admin untuk mengira harga.@endunless Hubungi terus: <a href="https://wa.me/{{ $customerWaNumber }}" style="color:#1FAF54;font-weight:700;text-decoration:none;">wa.me/{{ $customerWaNumber }}</a></p>
 
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:13.5px;color:#333333;border-collapse:collapse;">
                 @php

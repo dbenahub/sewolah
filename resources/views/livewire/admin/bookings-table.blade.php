@@ -56,6 +56,7 @@
               <th>Kenderaan</th>
               <th>Sumber</th>
               <th>Tarikh ambil</th>
+              <th>Peringkat &amp; SOP</th>
               <th>Status</th>
               <th style="text-align:right">Tindakan</th>
             </tr>
@@ -74,6 +75,14 @@
                   @if($lead->customer_category)<span class="adm-sub">{{ $lead->customerCategoryLabel('ms') }}</span>@endif
                 </td>
                 <td class="num">{{ optional($lead->arrival_date)->format('d/m/Y') ?: '-' }}</td>
+                @php $c = $lead->compliance(); @endphp
+                <td>
+                  <a href="{{ route('admin.bookings.manage', $lead) }}" class="adm-stagecell" style="text-decoration:none;color:inherit">
+                    <span style="font-size:12.5px;font-weight:700">{{ $lead->stageLabel() }}</span>
+                    <span class="adm-meter {{ $c['percent'] >= 100 ? '' : ($c['percent'] >= 50 ? 'adm-meter--warn' : 'adm-meter--bad') }}"><span style="width:{{ $c['percent'] }}%"></span></span>
+                    <span class="adm-sub">SOP {{ $c['percent'] }}% · {{ $c['done'] }}/{{ $c['total'] }}</span>
+                  </a>
+                </td>
                 <td>
                   <select wire:change="updateStatus({{ $lead->id }}, $event.target.value)" class="adm-select adm-status-select" aria-label="Status {{ $lead->referenceNumber() }}">
                     @foreach($statusLabels as $key => $label)
@@ -83,6 +92,7 @@
                 </td>
                 <td>
                   <div class="adm-actions">
+                    <a href="{{ route('admin.bookings.manage', $lead) }}" class="adm-btn adm-btn--sm adm-btn--primary">Urus</a>
                     <button type="button" wire:click="viewLead({{ $lead->id }})" class="adm-btn adm-btn--sm">Lihat</button>
                     <button type="button" wire:click="editLead({{ $lead->id }})" class="adm-btn adm-btn--sm adm-btn--soft">Edit</button>
                     <button type="button" wire:click="deleteLead({{ $lead->id }})" wire:confirm="Padam tempahan {{ $lead->referenceNumber() }} ({{ $lead->full_name }})? Tindakan ini tidak boleh dibatalkan." class="adm-btn adm-btn--sm adm-btn--danger">Padam</button>
@@ -202,7 +212,8 @@
             <a href="https://wa.me/{{ $waCustomer }}" target="_blank" rel="noopener" class="adm-btn adm-btn--wa">WhatsApp pelanggan</a>
             <div class="adm-modal__foot-right">
               <button type="button" wire:click="deleteLead({{ $selectedLead->id }})" wire:confirm="Padam tempahan {{ $selectedLead->referenceNumber() }} ({{ $selectedLead->full_name }})? Tindakan ini tidak boleh dibatalkan." class="adm-btn adm-btn--danger">Padam</button>
-              <button type="button" wire:click="editLead({{ $selectedLead->id }})" class="adm-btn adm-btn--primary">Edit</button>
+              <button type="button" wire:click="editLead({{ $selectedLead->id }})" class="adm-btn">Edit</button>
+              <a href="{{ route('admin.bookings.manage', $selectedLead) }}" class="adm-btn adm-btn--primary">Urus tempahan &amp; SOP</a>
             </div>
           </div>
         @else

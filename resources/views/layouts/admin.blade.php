@@ -10,20 +10,24 @@
         'pixels' => '<path d="M12 3v3M12 18v3M3 12h3M18 12h3M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M12 19a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z"/>',
         'page' => '<path d="M4 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5ZM4 9h16M9 9v11"/>',
         'password' => '<path d="M7 11V8a5 5 0 0 1 10 0v3M6 11h12a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1Zm6 4v2"/>',
+        'price' => '<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8ZM7.5 7.5h.01"/>',
+        'bank' => '<path d="M3 10h18M5 10v8m4.7-8v8m4.6-8v8M19 10v8M3 21h18M12 3l9 5H3l9-5Z"/>',
         'logout' => '<path d="M15 4h3a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3M10 16l-4-4 4-4M6 12h10"/>',
         'site' => '<path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM3.6 9h16.8M3.6 15h16.8M12 3c2.2 2.4 3.3 5.4 3.3 9s-1.1 6.6-3.3 9c-2.2-2.4-3.3-5.4-3.3-9S9.8 5.4 12 3Z"/>',
     ];
     $navItems = [
         ['route' => 'admin.dashboard', 'label' => __('admin.nav.dashboard'), 'icon' => 'dashboard'],
         ['route' => 'admin.bookings', 'label' => __('admin.nav.bookings'), 'icon' => 'bookings', 'badge' => $pendingCount],
+        ['route' => 'admin.car-rates', 'label' => 'Harga Kereta', 'icon' => 'price'],
         ['route' => 'admin.vehicles', 'label' => __('admin.nav.vehicles'), 'icon' => 'vehicles'],
     ];
     $settingItems = [
+        ['route' => 'admin.payment-settings', 'label' => 'Harga & Bayaran', 'icon' => 'bank'],
         ['route' => 'admin.page-settings', 'label' => __('admin.nav.page_settings'), 'icon' => 'page'],
         ['route' => 'admin.pixel-settings', 'label' => __('admin.nav.pixels'), 'icon' => 'pixels'],
         ['route' => 'admin.change-password', 'label' => __('admin.nav.change_password'), 'icon' => 'password'],
     ];
-    $current = collect(array_merge($navItems, $settingItems))->first(fn ($i) => request()->routeIs($i['route']));
+    $current = collect(array_merge($navItems, $settingItems))->first(fn ($i) => request()->routeIs($i['route'], $i['route'].'.*'));
 @endphp
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}" data-theme="dark">
@@ -63,7 +67,7 @@
       <nav class="adm-nav" aria-label="Admin">
         <p class="adm-nav__label">Utama</p>
         @foreach($navItems as $item)
-          <a href="{{ route($item['route']) }}" @class(['is-active' => request()->routeIs($item['route'])])>
+          <a href="{{ route($item['route']) }}" @class(['is-active' => request()->routeIs($item['route'], $item['route'].'.*')])>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{!! $icons[$item['icon']] !!}</svg>
             <span>{{ $item['label'] }}</span>
             @if(!empty($item['badge']))<span class="adm-nav__badge" title="Tempahan baru">{{ $item['badge'] }}</span>@endif
@@ -71,7 +75,7 @@
         @endforeach
         <p class="adm-nav__label">Tetapan</p>
         @foreach($settingItems as $item)
-          <a href="{{ route($item['route']) }}" @class(['is-active' => request()->routeIs($item['route'])])>
+          <a href="{{ route($item['route']) }}" @class(['is-active' => request()->routeIs($item['route'], $item['route'].'.*')])>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{!! $icons[$item['icon']] !!}</svg>
             <span>{{ $item['label'] }}</span>
           </a>

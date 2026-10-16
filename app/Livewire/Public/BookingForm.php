@@ -143,6 +143,7 @@ class BookingForm extends Component
             'end_date' => $this->endDate,
             'purpose' => $this->purpose,
             'vehicle_id' => $vehicle?->id,
+            'car_rate_id' => $vehicle?->car_rate_id,
             'vehicle_name_snapshot' => $vehicle?->name ?? $this->otherVehicleModel,
             'other_vehicle_model' => $this->otherVehicleModel,
             'passengers' => $this->passengers,
@@ -165,6 +166,9 @@ class BookingForm extends Component
 
         $waNumber = PageSetting::current()->whatsapp_number;
         $whatsappUrl = $this->buildWhatsappUrl($lead, $waNumber);
+
+        $lead->applyQuote()->save();
+        $lead->logEvent('permohonan', 'Permohonan diterima melalui halaman /outstation');
 
         try {
             $settings = PageSetting::current();

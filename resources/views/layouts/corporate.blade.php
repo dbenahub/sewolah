@@ -28,7 +28,12 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
+    @if($noindex ?? false)
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="same-origin">
+    @else
     <link rel="canonical" href="{{ url()->current() }}">
+    @endif
     <link rel="icon" href="{{ asset('favicon.ico') }}">
 
     @include('partials.fonts')
@@ -154,6 +159,7 @@
               <li><a href="{{ $navBase }}#tentang">{{ __('home.nav.about') }}</a></li>
               <li><a href="{{ $navBase }}#proses">{{ __('home.nav.process') }}</a></li>
               <li><a href="{{ route('privacy-policy') }}">{{ __('home.footer.privacy') }}</a></li>
+              <li><a href="{{ route('rental.terms') }}">{{ app()->getLocale() === 'en' ? 'Rental Terms & Policies' : 'Terma & Polisi Sewaan' }}</a></li>
               <li><a href="{{ route('terms') }}">{{ __('home.footer.terms') }}</a></li>
             </ul>
           </div>

@@ -10,7 +10,7 @@ class Vehicle extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'category', 'image_path', 'tags', 'cta_label',
+        'name', 'category', 'car_rate_id', 'image_path', 'tags', 'cta_label',
         'is_featured', 'sort_order', 'is_active',
     ];
 
@@ -21,6 +21,11 @@ class Vehicle extends Model
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
         ];
+    }
+
+    public function carRate()
+    {
+        return $this->belongsTo(CarRate::class);
     }
 
     public function tagsFor(string $locale): array

@@ -4,6 +4,7 @@ namespace App\Livewire\Public;
 
 use App\Mail\CustomerBookingConfirmation;
 use App\Mail\NewLeadNotification;
+use App\Models\CarRate;
 use App\Models\Lead;
 use App\Models\PageSetting;
 use App\Models\PixelSetting;
@@ -67,9 +68,18 @@ class RequestForm extends Component
             $this->customerCategory = $category;
         }
 
+        // ?kereta=<car rate id> (price list) or ?kenderaan=<website vehicle id>
+        $rateParam = (string) (request('kereta') ?? '');
+        if (ctype_digit($rateParam) && CarRate::where('is_active', true)->whereKey($rateParam)->exists()) {
+            $this->vehicleId = 'r'.$rateParam;
+        }
+
         $vehicle = (string) (request('kenderaan') ?? request('vehicle') ?? '');
-        if ($vehicle !== '' && Vehicle::where('is_active', true)->whereKey($vehicle)->exists()) {
-            $this->vehicleId = $vehicle;
+        if ($this->vehicleId === '' && ctype_digit($vehicle)) {
+            $rateId = Vehicle::where('is_active', true)->whereKey($vehicle)->value('car_rate_id');
+            if ($rateId && CarRate::where('is_active', true)->whereKey($rateId)->exists()) {
+                $this->vehicleId = 'r'.$rateId;
+            }
         }
     }
 
@@ -113,7 +123,7 @@ class RequestForm extends Component
                     if (in_array($value, ['any', 'other'], true)) {
                         return;
                     }
-                    if (! ctype_digit((string) $value) || ! Vehicle::where('is_active', true)->whereKey($value)->exists()) {
+                    if (! $this->selectedRate()) {
                         $fail(__('form.errors.required'));
                     }
                 }],
@@ -215,12 +225,11 @@ class RequestForm extends Component
             }
         }
 
-        $vehicle = ($this->vehicleId !== '' && ctype_digit($this->vehicleId))
-            ? Vehicle::find($this->vehicleId)
-            : null;
+        $rate = $this->selectedRate();
+        $vehicle = $rate ? Vehicle::where('car_rate_id', $rate->id)->where('is_active', true)->first() : null;
 
         $vehicleSnapshot = match (true) {
-            $vehicle !== null => $vehicle->name,
+            $rate !== null => $rate->name(),
             $this->isOtherVehicle() => $this->otherVehicleModel,
             default => trans('form.fields.vehicle_any', [], 'ms'),
         };
@@ -243,6 +252,7 @@ class RequestForm extends Component
             'end_date' => $this->returnDate,
             'purpose' => $this->purpose,
             'vehicle_id' => $vehicle?->id,
+            'car_rate_id' => $rate?->id,
             'vehicle_name_snapshot' => $vehicleSnapshot,
             'other_vehicle_model' => $this->isOtherVehicle() ? $this->otherVehicleModel : null,
             'passengers' => (int) $this->passengers,
@@ -260,6 +270,10 @@ class RequestForm extends Component
             'fbclid' => $utm['fbclid'] ?? null,
             'submitted_at' => now(),
         ]);
+
+        // Pre-calculate the quotation so the PIC email shows the price straight away.
+        $lead->applyQuote()->save();
+        $lead->logEvent('permohonan', 'Permohonan diterima melalui borang /form');
 
         $settings = PageSetting::current();
         $this->reference = $lead->referenceNumber();
@@ -306,10 +320,19 @@ class RequestForm extends Component
         return 'https://wa.me/'.preg_replace('/[^0-9]/', '', $number).'?text='.rawurlencode($message);
     }
 
+    protected function selectedRate(): ?CarRate
+    {
+        if (! preg_match('/^r(\d+)$/', $this->vehicleId, $m)) {
+            return null;
+        }
+
+        return CarRate::where('is_active', true)->find((int) $m[1]);
+    }
+
     #[Computed]
     public function vehicleOptions()
     {
-        return Vehicle::where('is_active', true)->orderBy('sort_order')->get();
+        return CarRate::activeGrouped();
     }
 
     public function render()

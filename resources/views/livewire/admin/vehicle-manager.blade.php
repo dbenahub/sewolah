@@ -44,6 +44,15 @@
         <input type="text" wire:model="category" class="adm-input" placeholder="Contoh: PREMIUM FAMILY MPV">
         @error('category') <span class="adm-error">{{ $message }}</span> @enderror
       </label>
+      <label class="adm-field"><span class="adm-label">Harga rujukan (senarai harga)</span>
+        <select wire:model="carRateId" class="adm-select">
+          <option value="">— Tiada —</option>
+          @foreach(\App\Models\CarRate::orderBy('brand')->orderBy('model')->get() as $r)
+            <option value="{{ $r->id }}">{{ $r->name() }} — {{ \App\Support\Pricing::rm($r->bookingDaily()) }}/hari</option>
+          @endforeach
+        </select>
+        <span class="adm-hint">Butang "Tempah" di laman utama akan memilih kereta ini secara automatik dalam borang.</span>
+      </label>
       <label class="adm-field"><span class="adm-label">Tags (BM) — pisah dengan koma</span>
         <input type="text" wire:model="tagsMs" class="adm-input">
       </label>
